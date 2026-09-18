@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monopoli Bucin</title>
+    <title>Monopoli Bucin - 2 Arah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .monopoly-red { background-color: #990000; }
-        .monopoly-dark-red { background-color: #660000; }
+        .monopoly-red { background-color: #801313; }
+        .monopoly-red-light { background-color: #a81c1c; }
         .monopoly-border { border: 3px solid #660000; }
         
         @keyframes shake {
@@ -22,90 +22,194 @@
             animation: shake 0.15s infinite;
             display: inline-block;
         }
+
+        /* Banner Transisi Giliran */
+        #turn-overlay {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-red-50 text-gray-800 font-sans min-h-screen flex flex-col items-center justify-between p-4">
+<body class="bg-red-50 text-gray-800 font-sans min-h-screen flex flex-col justify-center items-center p-2 select-none">
 
     <!-- SETUP SCREEN -->
-    <div id="setup-screen" class="w-full max-w-md bg-white monopoly-border rounded-2xl p-6 shadow-xl my-auto">
-        <h1 class="text-3xl font-extrabold text-center text-red-800 mb-2">🎲 Monopoli Bucin 💖</h1>
-        <p class="text-center text-sm text-gray-600 mb-6">Game Monopoli khusus buat kamu dan doi tersayang!</p>
+    <div id="setup-screen" class="w-full max-w-sm bg-white monopoly-border rounded-3xl p-6 shadow-2xl my-auto">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-extrabold text-red-900 mb-1">🎲 Monopoli Bucin 💖</h1>
+            <p class="text-xs text-gray-600 font-medium">Layout Berhadapan 2 Arah (Face-to-Face)</p>
+        </div>
         
         <div class="space-y-4">
             <div>
-                <label class="block text-sm font-bold text-red-900 mb-1">Nama Pemain 1:</label>
-                <input type="text" id="player1-name" value="Adham" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+                <label class="block text-xs font-bold text-red-900 mb-1">Nama Pemain 1 (Bawah):</label>
+                <input type="text" id="player1-name" placeholder="Tulis Nama" class="w-full px-4 py-2 text-sm border-2 border-red-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600">
             </div>
             <div>
-                <label class="block text-sm font-bold text-red-900 mb-1">Nama Pemain 2:</label>
-                <input type="text" id="player2-name" value="Sasa" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+                <label class="block text-xs font-bold text-red-900 mb-1">Nama Pemain 2 (Atas):</label>
+                <input type="text" id="player2-name" placeholder="Tulis Nama" class="w-full px-4 py-2 text-sm border-2 border-red-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600">
             </div>
-            <button onclick="startGame()" class="w-full monopoly-red text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-800 transition">Mulai Permainan 🚀</button>
+            <button onclick="startGame()" class="w-full monopoly-red text-white font-black py-3 rounded-2xl shadow-lg hover:bg-red-900 transition transform active:scale-95 text-base">Mulai Permainan 🚀</button>
         </div>
     </div>
 
     <!-- GAMEPLAY SCREEN -->
-    <div id="game-screen" class="w-full max-w-md flex flex-col justify-between hidden space-y-4">
+    <div id="game-screen" class="w-full max-w-sm flex flex-col justify-between hidden h-full min-h-[660px] space-y-2 relative">
         
-        <!-- Header / Info Pemain -->
-        <div class="bg-white monopoly-border rounded-2xl p-4 shadow-md">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="text-xl font-black text-red-900">Monopoli Bucin</h2>
-                <span id="turn-info" class="text-xs font-bold bg-red-100 text-red-800 px-3 py-1 rounded-full">Giliran: -</span>
-            </div>
-            <div class="grid grid-cols-2 gap-3 text-center">
-                <div id="p1-card" class="p-3 bg-red-50 rounded-xl border border-red-200">
-                    <p id="p1-display-name" class="font-bold text-sm text-red-900">P1</p>
-                    <p class="text-xs text-gray-600">Saldo: Rp <span id="p1-money">15000000</span></p>
-                    <p class="text-[10px] text-gray-500 mt-1">Aset: <span id="p1-properties">-</span></p>
+        <!-- ================= PEMAIN 2 AREA (TOP - ROTATE 180) ================= -->
+        <div id="p2-area" class="transform rotate-180 transition-all duration-300">
+            <!-- Tampilan Saat Giliran Pemain 2 -->
+            <div id="p2-active-view" class="space-y-2">
+                <!-- Info Pemain 2 Ringkas -->
+                <div class="flex gap-2">
+                    <div class="w-1/3 monopoly-border bg-white rounded-2xl p-2 text-center shadow-md flex flex-col justify-center">
+                        <span id="p2-active-name" class="font-black text-red-900 text-sm truncate">Pemain 2</span>
+                        <span id="p2-active-money" class="text-xs font-bold text-gray-700">Rp15.000.000</span>
+                    </div>
+                    <div class="w-2/3 monopoly-border bg-white rounded-2xl p-2 text-center shadow-md flex flex-col justify-center">
+                        <span class="text-[10px] font-extrabold text-red-800 uppercase">ASET KEPEMILIKAN</span>
+                        <p id="p2-active-props" class="text-[10px] text-gray-600 font-medium truncate">Belum Ada</p>
+                    </div>
                 </div>
-                <div id="p2-card" class="p-3 bg-white rounded-xl border border-gray-200">
-                    <p id="p2-display-name" class="font-bold text-sm text-gray-800">P2</p>
-                    <p class="text-xs text-gray-600">Saldo: Rp <span id="p2-money">15000000</span></p>
-                    <p class="text-[10px] text-gray-500 mt-1">Aset: <span id="p2-properties">-</span></p>
+
+                <!-- Status Posisi & Dadu Pemain 2 -->
+                <div class="grid grid-cols-5 gap-2">
+                    <div class="col-span-3 monopoly-border bg-white rounded-2xl p-2 text-center shadow-md flex flex-col justify-center border-dashed border-red-800">
+                        <span class="text-[10px] font-extrabold text-red-900 uppercase tracking-wider">POSISI SAAT INI</span>
+                        <p id="p2-tile-title" class="text-xs font-black text-red-800 truncate">START</p>
+                        <p id="p2-tile-sub" class="text-[9px] text-gray-600 leading-tight line-clamp-2">Selamat bermain!</p>
+                    </div>
+                    <div class="col-span-2 monopoly-border bg-white rounded-2xl p-2 text-center shadow-md flex flex-col justify-center border-dashed border-red-800">
+                        <span class="text-[10px] font-extrabold text-red-900">Giliran Kamu</span>
+                        <div class="text-2xl font-black my-0.5"><span id="p2-dice-icon">🎲</span></div>
+                        <span id="p2-dice-text" class="text-[10px] text-gray-600 font-bold">Angka Dadu: -</span>
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi Pemain 2 -->
+                <div id="p2-actions" class="grid grid-cols-2 gap-2">
+                    <!-- Tombol dirender via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Tampilan Saat Pemain 2 Menunggu Giliran -->
+            <div id="p2-wait-view" class="hidden space-y-2">
+                <div class="monopoly-border bg-white rounded-2xl p-2 text-center shadow-md">
+                    <p class="text-xs font-extrabold text-gray-700">Silahkan tunggu untuk giliran kamu lempar dadu</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="monopoly-red text-white p-2.5 rounded-2xl text-center font-black text-sm shadow">
+                        <span id="p2-wait-name">Pemain 2</span>
+                    </div>
+                    <div class="monopoly-border bg-white rounded-2xl p-2 text-center font-extrabold text-xs text-red-900 flex items-center justify-center">
+                        <span id="p2-wait-money">Rp15.000.000</span>
+                    </div>
+                </div>
+                <div class="monopoly-border bg-white rounded-2xl p-2.5 shadow-md grid grid-cols-5 gap-2 items-center">
+                    <div class="col-span-2 monopoly-red text-white p-3 rounded-2xl text-center flex flex-col justify-center items-center">
+                        <span class="text-xs font-bold">Tunggu Giliran</span>
+                        <span class="text-2xl mt-1">🎲</span>
+                    </div>
+                    <div class="col-span-3 border-2 border-dashed border-red-800 p-2 rounded-xl text-center">
+                        <span class="text-[10px] font-black text-red-900 uppercase block">POSISI SAAT INI</span>
+                        <p id="p2-wait-tile-title" class="text-xs font-black text-red-800 truncate">START</p>
+                        <p id="p2-wait-tile-sub" class="text-[9px] text-gray-600 line-clamp-2">Menunggu lawan...</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Panel Status Kotak & Aksi -->
-        <div class="bg-white monopoly-border rounded-2xl p-4 shadow-md text-center">
-            <p class="text-xs text-gray-500 uppercase tracking-wider font-bold">Posisi Saat Ini</p>
-            <h3 id="current-tile-name" class="text-lg font-extrabold text-red-800 my-1">START</h3>
-            <p id="current-tile-desc" class="text-xs text-gray-600 mb-4">Selamat bermain! Lempar dadu untuk jalan.</p>
-            
-            <div id="action-buttons" class="space-y-2">
-                <!-- Tombol aksi dirender dinamis -->
+        <!-- ================= KARTU MISTERI (TENGAH / INTERAKTIF) ================= -->
+        <div class="monopoly-border bg-white rounded-2xl p-2.5 shadow-lg text-center space-y-1 my-auto">
+            <div class="flex justify-between items-center px-1">
+                <span class="text-[11px] font-black text-red-900">KARTU MISTERI BUCIN</span>
+                <div class="flex gap-1">
+                    <button onclick="drawCard('chance')" class="bg-amber-500 hover:bg-amber-600 text-white text-[9px] font-black px-2 py-1 rounded-lg shadow">Kesempatan</button>
+                    <button onclick="drawCard('challenge')" class="bg-purple-600 hover:bg-purple-700 text-white text-[9px] font-black px-2 py-1 rounded-lg shadow">Tantangan</button>
+                </div>
+            </div>
+            <div id="card-display" class="bg-red-50 p-2 rounded-xl text-xs text-red-900 min-h-[42px] flex items-center justify-center font-bold border border-dashed border-red-300 text-center leading-tight">
+                Klik tombol di atas untuk mengambil kartu!
             </div>
         </div>
 
-        <!-- Area Kartu & Dadu -->
-        <div class="grid grid-cols-2 gap-3">
-            <!-- Kartu Panel -->
-            <div class="bg-white monopoly-border rounded-2xl p-3 flex flex-col justify-between shadow-md text-center">
-                <h4 class="font-bold text-xs text-red-900 mb-2">Kartu Misteri</h4>
-                <div id="card-display" class="bg-red-50 p-2 rounded-lg text-xs text-red-800 min-h-[50px] flex items-center justify-center font-medium mb-2 border border-dashed border-red-300">
-                    Tekan tombol untuk ambil kartu!
+        <!-- ================= PEMAIN 1 AREA (BOTTOM - NORMAL) ================= -->
+        <div id="p1-area" class="transition-all duration-300">
+            <!-- Tampilan Saat Giliran Pemain 1 -->
+            <div id="p1-active-view" class="space-y-2">
+                <!-- Status Posisi & Dadu Pemain 1 -->
+                <div class="grid grid-cols-5 gap-2">
+                    <div class="col-span-3 monopoly-border bg-white rounded-2xl p-2 text-center shadow-md flex flex-col justify-center border-dashed border-red-800">
+                        <span class="text-[10px] font-extrabold text-red-900 uppercase tracking-wider">POSISI SAAT INI</span>
+                        <p id="p1-tile-title" class="text-xs font-black text-red-800 truncate">START</p>
+                        <p id="p1-tile-sub" class="text-[9px] text-gray-600 leading-tight line-clamp-2">Selamat bermain!</p>
+                    </div>
+                    <div class="col-span-2 monopoly-border bg-white rounded-2xl p-2 text-center shadow-md flex flex-col justify-center border-dashed border-red-800">
+                        <span class="text-[10px] font-extrabold text-red-900">Giliran Kamu</span>
+                        <div class="text-2xl font-black my-0.5"><span id="p1-dice-icon">🎲</span></div>
+                        <span id="p1-dice-text" class="text-[10px] text-gray-600 font-bold">Angka Dadu: -</span>
+                    </div>
                 </div>
-                <div class="grid grid-cols-2 gap-1">
-                    <button onclick="drawCard('chance')" class="bg-yellow-500 hover:bg-yellow-600 text-white text-[10px] font-bold py-1 px-1 rounded shadow">Kesempatan</button>
-                    <button onclick="drawCard('challenge')" class="bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-bold py-1 px-1 rounded shadow">Tantangan</button>
+
+                <!-- Info & Tombol Aksi Pemain 1 -->
+                <div class="grid grid-cols-2 gap-2">
+                    <!-- Info Kiri (Nama, Saldo, Aset) -->
+                    <div class="space-y-1.5">
+                        <div class="monopoly-red text-white p-2 rounded-2xl text-center font-black text-sm shadow">
+                            <span id="p1-active-name">Pemain 1</span>
+                        </div>
+                        <div class="monopoly-border bg-white p-1.5 rounded-2xl text-center shadow">
+                            <span id="p1-active-money" class="font-extrabold text-xs text-red-900">Rp15.000.000</span>
+                        </div>
+                        <div class="monopoly-border bg-white p-2 rounded-2xl shadow">
+                            <div class="monopoly-red text-white text-[10px] font-black rounded-lg py-0.5 text-center mb-1">Aset</div>
+                            <p id="p1-active-props" class="text-[9px] text-gray-700 font-medium text-center line-clamp-3">Belum Ada</p>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Kanan -->
+                    <div id="p1-actions" class="flex flex-col gap-1.5 justify-between">
+                        <!-- Tombol dirender via JavaScript -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Dadu Panel -->
-            <div class="bg-white monopoly-border rounded-2xl p-3 flex flex-col justify-between shadow-md text-center">
-                <h4 class="font-bold text-xs text-red-900 mb-1">Lempar Dadu</h4>
-                <div class="my-auto">
-                    <div id="dice-box" class="text-4xl font-black text-red-800 mb-1">🎲 <span id="dice-icon">⚀</span></div>
-                    <p id="dice-value" class="text-xs text-gray-600">Angka: -</p>
+            <!-- Tampilan Saat Pemain 1 Menunggu Giliran -->
+            <div id="p1-wait-view" class="hidden space-y-2">
+                <div class="monopoly-border bg-white rounded-2xl p-2.5 shadow-md grid grid-cols-5 gap-2 items-center">
+                    <div class="col-span-3 border-2 border-dashed border-red-800 p-2 rounded-xl text-center">
+                        <span class="text-[10px] font-black text-red-900 uppercase block">POSISI SAAT INI</span>
+                        <p id="p1-wait-tile-title" class="text-xs font-black text-red-800 truncate">START</p>
+                        <p id="p1-wait-tile-sub" class="text-[9px] text-gray-600 line-clamp-2">Menunggu lawan...</p>
+                    </div>
+                    <div class="col-span-2 monopoly-red text-white p-3 rounded-2xl text-center flex flex-col justify-center items-center">
+                        <span class="text-xs font-bold">Tunggu Giliran</span>
+                        <span class="text-2xl mt-1">🎲</span>
+                    </div>
                 </div>
-                <button id="roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white text-xs font-bold py-2 rounded-xl shadow hover:bg-red-800 transition">Lempar Dadu</button>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="monopoly-red text-white p-2.5 rounded-2xl text-center font-black text-sm shadow">
+                        <span id="p1-wait-name">Pemain 1</span>
+                    </div>
+                    <div class="monopoly-border bg-white rounded-2xl p-2 text-center font-extrabold text-xs text-red-900 flex items-center justify-center">
+                        <span id="p1-wait-money">Rp15.000.000</span>
+                    </div>
+                </div>
+                <div class="monopoly-border bg-white rounded-2xl p-2 text-center shadow-md">
+                    <p class="text-xs font-extrabold text-gray-700">Silahkan tunggu untuk giliran kamu lempar dadu</p>
+                </div>
             </div>
+        </div>
+
+        <!-- ================= OVERLAY TRANSISI GILIRAN ================= -->
+        <div id="turn-overlay" class="absolute inset-0 bg-red-900/90 backdrop-blur-sm z-50 flex flex-col justify-center items-center text-white p-4 opacity-0 pointer-events-none rounded-3xl">
+            <span class="text-4xl mb-2">🔄</span>
+            <h2 id="overlay-title" class="text-2xl font-black text-center tracking-wider mb-1">GILIRAN PEMAIN 1</h2>
+            <p id="overlay-sub" class="text-xs font-medium text-red-200">Bersiaplah untuk melempar dadu!</p>
         </div>
 
     </div>
 
     <script>
+        // Data Board & Tile Game
         const tiles = [
             { name: "START", type: "start", price: 0, buyoutCount: 0 },
             { name: "Jakarta", type: "property", price: 500000, owner: null, buyoutCount: 0 },
@@ -151,10 +255,10 @@
         ];
 
         let players = [
-            { id: 0, name: "Adham", money: 15000000, position: 0, properties: [], inJail: false },
-            { id: 1, name: "Sasa", money: 15000000, position: 0, properties: [], inJail: false }
+            { id: 0, name: "Pemain 1", money: 15000000, position: 0, properties: [], inJail: false },
+            { id: 1, name: "Pemain 2", money: 15000000, position: 0, properties: [], inJail: false }
         ];
-        let currentTurn = 0; 
+        let currentTurn = 0; // 0 = Pemain 1, 1 = Pemain 2
         let hasRolled = false; 
         const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
@@ -165,22 +269,18 @@
             if(p1Val) players[0].name = p1Val;
             if(p2Val) players[1].name = p2Val;
 
-            document.getElementById('p1-display-name').innerText = players[0].name;
-            document.getElementById('p2-display-name').innerText = players[1].name;
-
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
 
             updateUI();
+            showTurnOverlay(`GILIRAN ${players[currentTurn].name.toUpperCase()}`);
         }
 
-        // Fungsi helper untuk menghitung harga buyout progresif berdasarkan jumlah riwayat buyout
+        // Kalkulasi Progresif Harga Buyout
         function getBuyoutPrice(tile) {
             if (tile.buyoutCount === 0) {
-                // Buyout ke-1: 1,5x dari harga normal
                 return Math.round(tile.price * 1.5);
             } else {
-                // Buyout ke-2 dan seterusnya: Harga buyout sebelumnya + 10% dari harga normal
                 let baseBuyout = tile.price * 1.5;
                 let increment = tile.price * 0.10 * tile.buyoutCount;
                 return Math.round(baseBuyout + increment);
@@ -188,94 +288,122 @@
         }
 
         function updateUI() {
-            document.getElementById('p1-money').innerText = players[0].money.toLocaleString();
-            document.getElementById('p2-money').innerText = players[1].money.toLocaleString();
+            // Update Info Nama & Saldo
+            document.getElementById('p1-active-name').innerText = players[0].name;
+            document.getElementById('p1-wait-name').innerText = players[0].name;
+            document.getElementById('p1-active-money').innerText = `Rp${players[0].money.toLocaleString()}`;
+            document.getElementById('p1-wait-money').innerText = `Rp${players[0].money.toLocaleString()}`;
+            document.getElementById('p1-active-props').innerText = players[0].properties.length > 0 ? players[0].properties.join(', ') : 'Belum Ada';
 
-            document.getElementById('p1-properties').innerText = players[0].properties.length > 0 ? players[0].properties.join(', ') : 'Belum ada';
-            document.getElementById('p2-properties').innerText = players[1].properties.length > 0 ? players[1].properties.join(', ') : 'Belum ada';
+            document.getElementById('p2-active-name').innerText = players[1].name;
+            document.getElementById('p2-wait-name').innerText = players[1].name;
+            document.getElementById('p2-active-money').innerText = `Rp${players[1].money.toLocaleString()}`;
+            document.getElementById('p2-wait-money').innerText = `Rp${players[1].money.toLocaleString()}`;
+            document.getElementById('p2-active-props').innerText = players[1].properties.length > 0 ? players[1].properties.join(', ') : 'Belum Ada';
 
-            document.getElementById('turn-info').innerText = `Giliran: ${players[currentTurn].name}`;
+            // Toggle Tampilan Aktif / Menunggu berdasarkan Giliran
+            if (currentTurn === 0) {
+                // Pemain 1 Aktif
+                document.getElementById('p1-active-view').classList.remove('hidden');
+                document.getElementById('p1-wait-view').classList.add('hidden');
 
-            if(currentTurn === 0) {
-                document.getElementById('p1-card').className = "p-3 bg-red-50 rounded-xl border-2 border-red-600 shadow";
-                document.getElementById('p2-card').className = "p-3 bg-white rounded-xl border border-gray-200";
+                document.getElementById('p2-active-view').classList.add('hidden');
+                document.getElementById('p2-wait-view').classList.remove('hidden');
             } else {
-                document.getElementById('p1-card').className = "p-3 bg-white rounded-xl border border-gray-200";
-                document.getElementById('p2-card').className = "p-3 bg-red-50 rounded-xl border-2 border-red-600 shadow";
+                // Pemain 2 Aktif
+                document.getElementById('p2-active-view').classList.remove('hidden');
+                document.getElementById('p2-wait-view').classList.add('hidden');
+
+                document.getElementById('p1-active-view').classList.add('hidden');
+                document.getElementById('p1-wait-view').classList.remove('hidden');
             }
 
-            let player = players[currentTurn];
+            // Update Info Tile untuk Pemain 1 & Pemain 2
+            updateTileInfo(0);
+            updateTileInfo(1);
+
+            // Render Tombol Aksi
+            renderActionButtons();
+        }
+
+        function updateTileInfo(playerIdx) {
+            let player = players[playerIdx];
             let currentTile = tiles[player.position];
-            document.getElementById('current-tile-name').innerText = `${currentTile.name} (Kotak #${player.position})`;
-            
-            let desc = "";
-            if(currentTile.type === 'start') desc = "Titik awal permainan.";
-            else if(currentTile.type === 'chance') desc = "Kotak Kesempatan! Ambil kartu kesempatan di bawah.";
-            else if(currentTile.type === 'challenge') desc = "Kotak Tantangan! Ambil kartu tantangan di bawah.";
+            let prefix = playerIdx === 0 ? 'p1' : 'p2';
+
+            let titleText = `${currentTile.name} (#${player.position})`;
+            let descText = "";
+
+            if(currentTile.type === 'start') descText = "Titik awal permainan.";
+            else if(currentTile.type === 'chance') descText = "Kotak Kesempatan! Ambil kartu misteri.";
+            else if(currentTile.type === 'challenge') descText = "Kotak Tantangan! Ambil kartu misteri.";
             else if(currentTile.type === 'jail') {
-                if (player.inJail) {
-                    desc = "🚨 Kamu sedang berada di PENJARA! Pilih metode untuk bebas.";
-                } else {
-                    desc = "Hanya berkunjung ke Penjara. Aman!";
-                }
+                descText = player.inJail ? "🚨 Kamu sedang berada di PENJARA!" : "Hanya berkunjung ke Penjara. Aman!";
             }
             else if(currentTile.type === 'property') {
                 if(currentTile.owner === null) {
-                    desc = `Aset/Properti kosong. Harga beli: Rp ${currentTile.price.toLocaleString()}`;
-                } else if(currentTile.owner === currentTurn) {
-                    desc = `Ini properti/stasiun/bandara milikmu sendiri. Aman!`;
+                    descText = `Aset kosong. Harga beli: Rp${currentTile.price.toLocaleString()}`;
+                } else if(currentTile.owner === playerIdx) {
+                    descText = `Milikmu sendiri. Aman!`;
                 } else {
                     let taxPrice = Math.round(currentTile.price * 0.10);
                     let buyoutPrice = getBuyoutPrice(currentTile);
-                    desc = `Milik ${players[currentTile.owner].name}. Pajak Masuk (10%): Rp ${taxPrice.toLocaleString()} / Buyout: Rp ${buyoutPrice.toLocaleString()}`;
+                    descText = `Milik ${players[currentTile.owner].name}. Pajak (10%): Rp${taxPrice.toLocaleString()} / Buyout: Rp${buyoutPrice.toLocaleString()}`;
                 }
             }
-            document.getElementById('current-tile-desc').innerText = desc;
 
-            renderActionButtons(currentTile);
+            document.getElementById(`${prefix}-tile-title`).innerText = titleText;
+            document.getElementById(`${prefix}-tile-sub`).innerText = descText;
+
+            document.getElementById(`${prefix}-wait-tile-title`).innerText = titleText;
+            document.getElementById(`${prefix}-wait-tile-sub`).innerText = descText;
         }
 
-        function renderActionButtons(tile) {
-            const container = document.getElementById('action-buttons');
-            container.innerHTML = '';
-            let btnRoll = document.getElementById('roll-btn');
+        function renderActionButtons() {
             let player = players[currentTurn];
+            let tile = tiles[player.position];
+            let container = currentTurn === 0 ? document.getElementById('p1-actions') : document.getElementById('p2-actions');
+            container.innerHTML = '';
 
+            // Jika di Penjara
             if (player.inJail && tile.type === 'jail') {
-                btnRoll.disabled = true;
-                btnRoll.classList.add('opacity-50');
                 container.innerHTML = `
-                    <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-amber-700">Bayar Denda Rp 5.000.000</button>
-                    <button onclick="jailAcceptChallenge()" class="w-full bg-purple-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-purple-700">Terima Tantangan untuk Bebas</button>
-                    <button onclick="jailRollDice()" class="w-full monopoly-red text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-red-800">Lempar Dadu (Harus Dapat Angka 6)</button>
+                    <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-black py-2 rounded-xl text-xs shadow hover:bg-amber-700">Bayar Denda Rp5.000.000</button>
+                    <button onclick="jailAcceptChallenge()" class="w-full bg-purple-600 text-white font-black py-2 rounded-xl text-xs shadow hover:bg-purple-700">Terima Tantangan</button>
+                    <button onclick="jailRollDice()" class="w-full monopoly-red text-white font-black py-2 rounded-xl text-xs shadow hover:bg-red-800">Dadu (Harus 6)</button>
                 `;
                 return;
             }
 
             if (!hasRolled) {
-                btnRoll.disabled = false;
-                btnRoll.classList.remove('opacity-50');
+                container.innerHTML = `
+                    <button onclick="rollDice()" class="w-full monopoly-red text-white font-black py-3 rounded-2xl text-sm shadow-lg hover:bg-red-800 transition transform active:scale-95">Lempar Dadu 🎲</button>
+                `;
             } else {
-                btnRoll.disabled = true;
-                btnRoll.classList.add('opacity-50');
-            }
-
-            if(hasRolled && tile.type === 'property') {
-                if(tile.owner === null) {
-                    container.innerHTML = `<button onclick="buyProperty()" class="w-full bg-green-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-green-700">Beli Aset Ini (Rp ${tile.price.toLocaleString()})</button>
-                                           <button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-gray-600">Lewati / Lanjut</button>`;
-                } else if(tile.owner !== currentTurn) {
-                    let taxPrice = Math.round(tile.price * 0.10);
-                    let buyoutPrice = getBuyoutPrice(tile);
-                    container.innerHTML = `<button onclick="payTax()" class="w-full bg-red-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-red-700">Bayar Pajak Masuk (Rp ${taxPrice.toLocaleString()})</button>
-                                           <button onclick="buyOutProperty()" class="w-full bg-blue-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-blue-700">Beli / Buyout Aset (Rp ${buyoutPrice.toLocaleString()})</button>`;
+                if (tile.type === 'property') {
+                    if (tile.owner === null) {
+                        container.innerHTML = `
+                            <button onclick="buyProperty()" class="w-full bg-emerald-600 text-white font-black py-2.5 rounded-2xl text-xs shadow hover:bg-emerald-700">Beli Properti</button>
+                            <button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-black py-2 rounded-2xl text-xs shadow hover:bg-gray-600">Lewati / Lanjut ➔</button>
+                        `;
+                    } else if (tile.owner !== currentTurn) {
+                        let taxPrice = Math.round(tile.price * 0.10);
+                        let buyoutPrice = getBuyoutPrice(tile);
+                        container.innerHTML = `
+                            <button onclick="buyOutProperty()" class="w-full bg-emerald-600 text-white font-black py-2 rounded-2xl text-xs shadow hover:bg-emerald-700">Beli / Buyout</button>
+                            <button onclick="payTax()" class="w-full bg-red-600 text-white font-black py-2 rounded-2xl text-xs shadow hover:bg-red-700">Bayar Pajak</button>
+                            <button onclick="nextTurn()" class="w-full bg-gray-400 text-white font-black py-1.5 rounded-xl text-[10px] shadow hover:bg-gray-500">Lewati / Lanjut</button>
+                        `;
+                    } else {
+                        container.innerHTML = `
+                            <button onclick="nextTurn()" class="w-full monopoly-red text-white font-black py-3 rounded-2xl text-xs shadow hover:bg-red-800">Lanjut Giliran ➔</button>
+                        `;
+                    }
                 } else {
-                    container.innerHTML = `<button onclick="nextTurn()" class="w-full monopoly-red text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-red-800">Lanjut ke Giliran Berikutnya ➔</button>`;
+                    container.innerHTML = `
+                        <button onclick="nextTurn()" class="w-full monopoly-red text-white font-black py-3 rounded-2xl text-xs shadow hover:bg-red-800">Lanjut Giliran ➔</button>
+                    `;
                 }
-            } else if (hasRolled) {
-                container.innerHTML = `<button onclick="nextTurn()" class="w-full monopoly-red text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-red-800">Lanjut ke Giliran Berikutnya ➔</button>`;
-            } else {
-                container.innerHTML = `<p class="text-xs text-red-600 font-semibold italic">Silakan lempar dadu terlebih dahulu!</p>`;
             }
         }
 
@@ -289,7 +417,7 @@
                 if (newPos >= tiles.length) {
                     newPos = newPos % tiles.length;
                     player.money += 2000000;
-                    alert(`🎉 Yeay! ${player.name} melewati/mencapai garis START dan mendapatkan bonus Rp 2.000.000 dari Bank Central!`);
+                    alert(`🎉 Yeay! ${player.name} melewati garis START dan mendapat bonus Rp2.000.000!`);
                 }
 
                 player.position = newPos;
@@ -297,11 +425,35 @@
 
                 if (tiles[player.position].type === 'jail') {
                     player.inJail = true;
-                    alert(`🚨 Oh tidak! ${player.name} masuk ke kotak Penjara!`);
+                    alert(`🚨 Oh tidak! ${player.name} masuk ke Penjara!`);
                 }
 
                 updateUI();
             });
+        }
+
+        function executeRoll(callback) {
+            let prefix = currentTurn === 0 ? 'p1' : 'p2';
+            let diceIcon = document.getElementById(`${prefix}-dice-icon`);
+            let diceText = document.getElementById(`${prefix}-dice-text`);
+            
+            diceIcon.classList.add('dice-animating');
+            
+            let counter = 0;
+            let shuffleInterval = setInterval(() => {
+                let randomTemp = Math.floor(Math.random() * 6);
+                diceIcon.innerText = diceSymbols[randomTemp];
+                counter++;
+                
+                if (counter > 10) {
+                    clearInterval(shuffleInterval);
+                    const diceRoll = Math.floor(Math.random() * 6) + 1;
+                    diceIcon.classList.remove('dice-animating');
+                    diceIcon.innerText = diceSymbols[diceRoll - 1];
+                    diceText.innerText = `Angka Dadu: ${diceRoll}`;
+                    callback(diceRoll);
+                }
+            }, 70);
         }
 
         function jailRollDice() {
@@ -309,10 +461,10 @@
                 let player = players[currentTurn];
                 if (diceRoll === 6) {
                     player.inJail = false;
-                    alert(`🎉 Hore! ${player.name} mendapatkan angka 6 dan berhasil keluar dari penjara!`);
+                    alert(`🎉 Hore! ${player.name} dapat angka 6 dan bebas dari penjara!`);
                     updateUI();
                 } else {
-                    alert(`❌ Yah, dadu menunjukkan angka ${diceRoll}. Kamu belum berhasil keluar dari penjara.`);
+                    alert(`❌ Angka dadu: ${diceRoll}. Kamu belum berhasil keluar dari penjara.`);
                     nextTurn();
                 }
             });
@@ -324,10 +476,10 @@
             if (player.money >= fine) {
                 player.money -= fine;
                 player.inJail = false;
-                alert(`${player.name} membayar denda Rp 5.000.000 dan bebas dari penjara! 💸`);
+                alert(`${player.name} membayar denda Rp5.000.000 dan bebas dari penjara! 💸`);
                 updateUI();
             } else {
-                alert("Uang kamu tidak cukup untuk membayar denda penjara!");
+                alert("Uang kamu tidak cukup untuk membayar denda!");
             }
         }
 
@@ -335,34 +487,8 @@
             let player = players[currentTurn];
             let rand = Math.floor(Math.random() * challengeCards.length);
             player.inJail = false;
-            alert(`${player.name} memilih tantangan untuk bebas:\n\n🔥 "${challengeCards[rand]}"\n\nSelamat, kamu bebas dari penjara! ✨`);
+            alert(`${player.name} memilih tantangan:\n\n🔥 "${challengeCards[rand]}"\n\nSelamat, kamu bebas! ✨`);
             updateUI();
-        }
-
-        function executeRoll(callback) {
-            let btnRoll = document.getElementById('roll-btn');
-            let diceIcon = document.getElementById('dice-icon');
-            let diceBox = document.getElementById('dice-box');
-            
-            btnRoll.disabled = true;
-            btnRoll.classList.add('opacity-50');
-            diceBox.classList.add('dice-animating');
-            
-            let counter = 0;
-            let shuffleInterval = setInterval(() => {
-                let randomTemp = Math.floor(Math.random() * 6);
-                diceIcon.innerText = diceSymbols[randomTemp];
-                counter++;
-                
-                if (counter > 10) {
-                    clearInterval(shuffleInterval);
-                    const diceRoll = Math.floor(Math.random() * 6) + 1;
-                    diceBox.classList.remove('dice-animating');
-                    diceIcon.innerText = diceSymbols[diceRoll - 1];
-                    document.getElementById('dice-value').innerText = `Angka Dadu: ${diceRoll}`;
-                    callback(diceRoll);
-                }
-            }, 80);
         }
 
         function buyProperty() {
@@ -372,12 +498,12 @@
             if(player.money >= tile.price) {
                 player.money -= tile.price;
                 tile.owner = currentTurn;
-                tile.buyoutCount = 0; // Reset hitungan buyout jika dibeli dari awal
+                tile.buyoutCount = 0;
                 player.properties.push(tile.name);
                 alert(`Yeay! ${player.name} berhasil membeli ${tile.name}! 🎉`);
                 nextTurn();
             } else {
-                alert("Duh, uang kamu tidak cukup untuk membeli aset ini, sayang!");
+                alert("Uang kamu tidak cukup untuk membeli aset ini!");
             }
         }
 
@@ -390,10 +516,10 @@
             if (player.money >= taxAmount) {
                 player.money -= taxAmount;
                 owner.money += taxAmount;
-                alert(`${player.name} membayar pajak masuk sebesar Rp ${taxAmount.toLocaleString()} (10% dari harga ${tile.name}) kepada ${owner.name}. 💸`);
+                alert(`${player.name} membayar pajak Rp${taxAmount.toLocaleString()} kepada ${owner.name}. 💸`);
                 nextTurn();
             } else {
-                alert("Uang kamu tidak cukup untuk membayar pajak masuk kota ini!");
+                alert("Uang kamu tidak cukup untuk membayar pajak!");
             }
         }
 
@@ -407,18 +533,16 @@
                 player.money -= buyoutPrice;
                 prevOwner.money += buyoutPrice; 
 
-                // Hapus aset dari kepemilikan pemilik lama
                 prevOwner.properties = prevOwner.properties.filter(p => p !== tile.name);
                 
-                // Pindahkan ke pemilik baru dan tambahkan riwayat hitungan buyout
                 tile.owner = currentTurn;
                 tile.buyoutCount++;
                 player.properties.push(tile.name);
 
-                alert(`Hebat! ${player.name} berhasil melakukan buyout ${tile.name} seharga Rp ${buyoutPrice.toLocaleString()} dari ${prevOwner.name}! 🏢✨`);
+                alert(`Hebat! ${player.name} berhasil melakukan buyout ${tile.name} seharga Rp${buyoutPrice.toLocaleString()} dari ${prevOwner.name}! 🏢✨`);
                 nextTurn();
             } else {
-                alert("Duh, uang kamu kurang untuk melakukan pembelian alih (buyout) aset ini!");
+                alert("Uang kamu tidak cukup untuk melakukan buyout!");
             }
         }
 
@@ -438,11 +562,27 @@
             currentTurn = currentTurn === 0 ? 1 : 0;
             hasRolled = false;
             
-            document.getElementById('card-display').innerText = "Tekan tombol untuk ambil kartu!";
-            document.getElementById('dice-icon').innerText = "⚀";
-            document.getElementById('dice-value').innerText = "Angka: -";
+            document.getElementById('p1-dice-icon').innerText = "🎲";
+            document.getElementById('p1-dice-text').innerText = "Angka Dadu: -";
+            document.getElementById('p2-dice-icon').innerText = "🎲";
+            document.getElementById('p2-dice-text').innerText = "Angka Dadu: -";
 
+            showTurnOverlay(`GILIRAN ${players[currentTurn].name.toUpperCase()}`);
             updateUI();
+        }
+
+        function showTurnOverlay(titleText) {
+            let overlay = document.getElementById('turn-overlay');
+            let title = document.getElementById('overlay-title');
+            title.innerText = titleText;
+            
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+
+            setTimeout(() => {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }, 1000);
         }
     </script>
 </body>
