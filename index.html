@@ -53,37 +53,41 @@
     <div id="game-screen" class="w-full flex flex-col justify-between hidden space-y-2 py-1">
         
         <!-- ===== AREA PEMAIN 2 (DIBALIK / FLIP DI ATAS) ===== -->
-        <div id="p2-container" class="w-full bg-[#fae1df] monopoly-border rounded-3xl p-4 shadow-xl flex flex-col space-y-3 transition-opacity duration-300">
-            <!-- Konten yang dibalik 180 derajat -->
-            <div class="flipped-container flex flex-col space-y-3">
-                <div class="bg-white monopoly-border rounded-2xl p-3 shadow-inner">
-                    <div id="p2-card" class="space-y-2">
-                        <!-- Baris Atas: Nama Pemain di Kiri, Kolom Keuangan di Kanan -->
-                        <div class="grid grid-cols-2 gap-2 items-center">
-                            <div class="bg-[#800000] text-white font-black text-sm py-2 px-3 rounded-xl text-center shadow truncate">
-                                <span id="p2-display-name">Pemain 2</span>
-                            </div>
-                            <div class="bg-white border-2 border-[#800000] rounded-xl py-2 px-2 text-center text-xs font-extrabold text-[#800000] shadow-sm truncate">
-                                Rp <span id="p2-money">15.000.000</span>
-                            </div>
+        <div id="p2-container" class="w-full bg-[#fae1df] monopoly-border rounded-3xl p-3 shadow-xl flex flex-col space-y-2 transition-opacity duration-300">
+            <div class="flipped-container flex flex-col space-y-2">
+                <!-- Baris Identitas (Nama & Saldo) -->
+                <div class="bg-white monopoly-border rounded-2xl p-2.5 shadow-inner">
+                    <div class="grid grid-cols-2 gap-2 items-center">
+                        <div class="bg-[#800000] text-white font-black text-sm py-2 px-3 rounded-xl text-center shadow truncate">
+                            <span id="p2-display-name">Pemain 2</span>
                         </div>
-                        <!-- Baris Bawah: Aset / Biaya -->
-                        <div class="bg-[#800000] text-white rounded-xl p-2 text-center">
-                            <p class="text-xs font-bold mb-1">Aset / Biaya</p>
-                            <p class="text-[11px] font-medium leading-tight text-red-100 min-h-[30px]" id="p2-properties">Belum ada</p>
+                        <div class="bg-white border-2 border-[#800000] rounded-xl py-2 px-2 text-center text-xs font-extrabold text-[#800000] shadow-sm truncate">
+                            Rp <span id="p2-money">15.000.000</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Panel Aksi Pemain 2 -->
-                <div id="p2-action-panel" class="bg-white monopoly-border rounded-2xl p-3 shadow-md flex flex-col space-y-2 text-center">
-                    <!-- Tombol aksi P2 dirender dinamis -->
-                </div>
+                <!-- Layout 2 Kolom untuk Konten Utama Pemain 2 -->
+                <div class="grid grid-cols-2 gap-2">
+                    <!-- Kolom Kiri: Aset, Keterangan Status, Tombol Dadu -->
+                    <div class="flex flex-col space-y-2">
+                        <div class="bg-[#800000] text-white rounded-xl p-2 text-center shadow">
+                            <p class="text-xs font-bold mb-1">Aset / Biaya</p>
+                            <p class="text-[11px] font-medium leading-tight text-red-100 min-h-[30px]" id="p2-properties">Belum ada</p>
+                        </div>
+                        <div id="p2-action-panel" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center text-center min-h-[45px]">
+                            <!-- Status Keterangan Giliran -->
+                        </div>
+                        <button id="p2-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-red-800 transition">
+                            Lempar Dadu
+                        </button>
+                    </div>
 
-                <!-- Tombol Dadu P2 -->
-                <button id="p2-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-base py-3 rounded-2xl shadow-lg hover:bg-red-800 transition">
-                    Lempar Dadu
-                </button>
+                    <!-- Kolom Kanan: Tombol Aksi (Beli/Buyout, Pajak, Lewati) -->
+                    <div id="p2-btn-group" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center space-y-2">
+                        <!-- Tombol Aksi dirender dinamis -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -109,35 +113,40 @@
         </div>
 
         <!-- ===== AREA PEMAIN 1 (DI BAWAH NORMAL) ===== -->
-        <div id="p1-container" class="w-full bg-[#fae1df] monopoly-border rounded-3xl p-4 shadow-xl flex flex-col space-y-3 transition-opacity duration-300">
-            <div class="bg-white monopoly-border rounded-2xl p-3 shadow-inner">
-                <div id="p1-card" class="space-y-2">
-                    <!-- Baris Atas: Nama Pemain di Kiri, Kolom Keuangan di Kanan -->
-                    <div class="grid grid-cols-2 gap-2 items-center">
-                        <div class="bg-[#800000] text-white font-black text-sm py-2 px-3 rounded-xl text-center shadow truncate">
-                            <span id="p1-display-name">Pemain 1</span>
-                        </div>
-                        <div class="bg-white border-2 border-[#800000] rounded-xl py-2 px-2 text-center text-xs font-extrabold text-[#800000] shadow-sm truncate">
-                            Rp <span id="p1-money">15.000.000</span>
-                        </div>
+        <div id="p1-container" class="w-full bg-[#fae1df] monopoly-border rounded-3xl p-3 shadow-xl flex flex-col space-y-2 transition-opacity duration-300">
+            <!-- Baris Identitas (Nama & Saldo) -->
+            <div class="bg-white monopoly-border rounded-2xl p-2.5 shadow-inner">
+                <div class="grid grid-cols-2 gap-2 items-center">
+                    <div class="bg-[#800000] text-white font-black text-sm py-2 px-3 rounded-xl text-center shadow truncate">
+                        <span id="p1-display-name">Pemain 1</span>
                     </div>
-                    <!-- Baris Bawah: Aset / Biaya -->
-                    <div class="bg-[#800000] text-white rounded-xl p-2 text-center">
-                        <p class="text-xs font-bold mb-1">Aset / Biaya</p>
-                        <p class="text-[11px] font-medium leading-tight text-red-100 min-h-[30px]" id="p1-properties">Belum ada</p>
+                    <div class="bg-white border-2 border-[#800000] rounded-xl py-2 px-2 text-center text-xs font-extrabold text-[#800000] shadow-sm truncate">
+                        Rp <span id="p1-money">15.000.000</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel Aksi Pemain 1 -->
-            <div id="p1-action-panel" class="bg-white monopoly-border rounded-2xl p-3 shadow-md flex flex-col space-y-2 text-center">
-                <!-- Tombol aksi P1 dirender dinamis -->
-            </div>
+            <!-- Layout 2 Kolom untuk Konten Utama Pemain 1 -->
+            <div class="grid grid-cols-2 gap-2">
+                <!-- Kolom Kiri: Aset, Keterangan Status, Tombol Dadu -->
+                <div class="flex flex-col space-y-2">
+                    <div class="bg-[#800000] text-white rounded-xl p-2 text-center shadow">
+                        <p class="text-xs font-bold mb-1">Aset / Biaya</p>
+                        <p class="text-[11px] font-medium leading-tight text-red-100 min-h-[30px]" id="p1-properties">Belum ada</p>
+                    </div>
+                    <div id="p1-action-panel" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center text-center min-h-[45px]">
+                        <!-- Status Keterangan Giliran -->
+                    </div>
+                    <button id="p1-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-red-800 transition">
+                        Lempar Dadu
+                    </button>
+                </div>
 
-            <!-- Tombol Dadu P1 -->
-            <button id="p1-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-base py-3 rounded-2xl shadow-lg hover:bg-red-800 transition">
-                Lempar Dadu
-            </button>
+                <!-- Kolom Kanan: Tombol Aksi (Beli/Buyout, Pajak, Lewati) -->
+                <div id="p1-btn-group" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center space-y-2">
+                    <!-- Tombol Aksi dirender dinamis -->
+                </div>
+            </div>
         </div>
 
     </div>
@@ -264,30 +273,38 @@
         function renderActionPanels(tile) {
             const p1Panel = document.getElementById('p1-action-panel');
             const p2Panel = document.getElementById('p2-action-panel');
+            const p1BtnGroup = document.getElementById('p1-btn-group');
+            const p2BtnGroup = document.getElementById('p2-btn-group');
             const p1Roll = document.getElementById('p1-roll-btn');
             const p2Roll = document.getElementById('p2-roll-btn');
 
             p1Panel.innerHTML = '';
             p2Panel.innerHTML = '';
+            p1BtnGroup.innerHTML = '';
+            p2BtnGroup.innerHTML = '';
 
             let activePanel = currentTurn === 0 ? p1Panel : p2Panel;
+            let activeBtnGroup = currentTurn === 0 ? p1BtnGroup : p2BtnGroup;
             let activeRollBtn = currentTurn === 0 ? p1Roll : p2Roll;
             let inactiveRollBtn = currentTurn === 0 ? p2Roll : p1Roll;
             let inactivePanel = currentTurn === 0 ? p2Panel : p1Panel;
+            let inactiveBtnGroup = currentTurn === 0 ? p2BtnGroup : p1BtnGroup;
 
             inactiveRollBtn.disabled = true;
             inactiveRollBtn.classList.add('opacity-40', 'cursor-not-allowed');
-            inactivePanel.innerHTML = `<div class="bg-[#800000] text-white font-bold py-2 px-3 rounded-xl text-xs shadow">Tunggu ya!</div>`;
+            inactivePanel.innerHTML = `<span class="text-xs font-bold text-red-900">Tunggu ya!</span>`;
+            inactiveBtnGroup.innerHTML = `<span class="text-[10px] text-gray-400 text-center italic">Menunggu giliran...</span>`;
 
             let player = players[currentTurn];
 
             if (player.inJail && tile.type === 'jail') {
                 activeRollBtn.disabled = true;
                 activeRollBtn.classList.add('opacity-40');
-                activePanel.innerHTML = `
-                    <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-amber-700">Bayar Denda Rp 5.000.000</button>
-                    <button onclick="jailAcceptChallenge()" class="w-full bg-purple-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-purple-700">Terima Tantangan Bebas</button>
-                    <button onclick="jailRollDice()" class="w-full monopoly-red text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-red-800">Lempar Dadu (Angka 6)</button>
+                activePanel.innerHTML = `<span class="text-xs font-bold text-red-800">Di Penjara!</span>`;
+                activeBtnGroup.innerHTML = `
+                    <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-amber-700">Bayar Denda (5 Juta)</button>
+                    <button onclick="jailAcceptChallenge()" class="w-full bg-purple-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-purple-700">Tantangan Bebas</button>
+                    <button onclick="jailRollDice()" class="w-full monopoly-red text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-red-800">Lempar Dadu (6)</button>
                 `;
                 return;
             }
@@ -295,32 +312,36 @@
             if (!hasRolled) {
                 activeRollBtn.disabled = false;
                 activeRollBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+                activePanel.innerHTML = `<span class="text-[11px] font-bold text-red-700">Silakan lempar dadu!</span>`;
             } else {
                 activeRollBtn.disabled = true;
                 activeRollBtn.classList.add('opacity-40', 'cursor-not-allowed');
+                activePanel.innerHTML = `<span class="text-[11px] font-bold text-gray-600">Selesai melempar</span>`;
             }
 
             if (hasRolled && tile.type === 'property') {
                 if (tile.owner === null) {
-                    activePanel.innerHTML = `
-                        <button onclick="buyProperty()" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-xl text-xs shadow hover:bg-green-700">Beli / Buyout (Rp ${tile.price.toLocaleString('id-ID')})</button>
-                        <button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-gray-600">Lewati / Lanjut</button>
+                    // Properti belum bertuan: Tampilkan Beli / Buyout dan Lewati / Lanjut
+                    activeBtnGroup.innerHTML = `
+                        <button onclick="buyProperty()" class="w-full bg-green-600 text-white font-bold py-2 px-1 rounded-xl text-[11px] shadow hover:bg-green-700 leading-tight">Beli / Buyout (Rp ${tile.price.toLocaleString('id-ID')})</button>
+                        <button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-bold py-2 px-1 rounded-xl text-[11px] shadow hover:bg-gray-600">Lewati / Lanjut</button>
                     `;
                 } else if (tile.owner !== currentTurn) {
+                    // Properti milik pemain lain: Hanya opsi Beli / Buyout atau Bayar Pajak (Tombol Lewati dihilangkan)
                     let taxPrice = Math.round(tile.price * 0.10);
                     let buyoutPrice = getBuyoutPrice(tile);
-                    activePanel.innerHTML = `
-                        <button onclick="buyOutProperty()" class="w-full bg-green-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-green-700">Beli / Buyout (Rp ${buyoutPrice.toLocaleString('id-ID')})</button>
-                        <button onclick="payTax()" class="w-full bg-red-600 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-red-700">Bayar Pajak (Rp ${taxPrice.toLocaleString('id-ID')})</button>
-                        <button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-bold py-2 rounded-xl text-xs shadow hover:bg-gray-600">Lewati / Lanjut</button>
+                    activeBtnGroup.innerHTML = `
+                        <button onclick="buyOutProperty()" class="w-full bg-green-600 text-white font-bold py-2 px-1 rounded-xl text-[10px] shadow hover:bg-green-700 leading-tight">Beli / Buyout (Rp ${buyoutPrice.toLocaleString('id-ID')})</button>
+                        <button onclick="payTax()" class="w-full bg-red-600 text-white font-bold py-2 px-1 rounded-xl text-[10px] shadow hover:bg-red-700 leading-tight">Bayar Pajak (Rp ${taxPrice.toLocaleString('id-ID')})</button>
                     `;
                 } else {
-                    nextTurn();
+                    activeBtnGroup.innerHTML = `<span class="text-[10px] text-center font-bold text-green-700">Properti Sendiri</span>`;
+                    setTimeout(() => nextTurn(), 1200);
                 }
-            } else if (hasRolled) {
-                nextTurn();
+            } else if (hasRolled && tile.type !== 'property') {
+                activeBtnGroup.innerHTML = `<button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-bold py-2 px-1 rounded-xl text-xs shadow hover:bg-gray-600">Lanjut Giliran</button>`;
             } else {
-                activePanel.innerHTML = `<p class="text-xs text-red-600 font-semibold italic py-1">Silakan lempar dadu!</p>`;
+                activeBtnGroup.innerHTML = `<span class="text-[10px] text-gray-400 text-center italic">Menunggu dadu...</span>`;
             }
         }
 
