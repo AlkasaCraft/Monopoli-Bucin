@@ -78,8 +78,8 @@
                         <div id="p2-action-panel" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center text-center min-h-[45px]">
                             <!-- Status Keterangan Giliran -->
                         </div>
-                        <button id="p2-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-red-800 transition">
-                            Lempar Dadu
+                        <button id="p2-roll-btn" onclick="rollDice()" class="w-full bg-green-600 text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-green-700 transition">
+                            🎲 Lempar Dadu
                         </button>
                     </div>
 
@@ -152,8 +152,8 @@
                     <div id="p1-action-panel" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center text-center min-h-[45px]">
                         <!-- Status Keterangan Giliran -->
                     </div>
-                    <button id="p1-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-red-800 transition">
-                        Lempar Dadu
+                    <button id="p1-roll-btn" onclick="rollDice()" class="w-full bg-green-600 text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-green-700 transition">
+                        🎲 Lempar Dadu
                     </button>
                 </div>
 
@@ -174,7 +174,7 @@
             <div id="modal-content" class="bg-red-50 p-4 rounded-xl text-sm font-medium text-red-900 border border-dashed border-red-300">
                 Isi informasi akan muncul di sini...
             </div>
-            <button onclick="closeCardModal()" class="w-full monopoly-red text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-800 transition">Sudah Selesai ✨</button>
+            <button id="modal-close-btn" onclick="closeCardModal()" class="w-full monopoly-red text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-800 transition">Sudah Selesai ✨</button>
         </div>
     </div>
 
@@ -325,7 +325,7 @@
                     <p class="text-[10px] font-bold text-red-800 text-center mb-0.5">Area Penjara</p>
                     <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-amber-700">Bayar Denda (5 Juta)</button>
                     <button onclick="jailAcceptChallenge()" class="w-full bg-purple-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-purple-700">Tantangan Bebas</button>
-                    <button onclick="jailRollDice()" class="w-full monopoly-red text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-red-800">Lempar Dadu (6)</button>
+                    <button onclick="jailRollDice()" class="w-full bg-green-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-green-700">🎲 Lempar Dadu (6)</button>
                 `;
                 return;
             }
@@ -363,8 +363,14 @@
                     `;
                     setTimeout(() => nextTurn(), 1200);
                 }
+            } else if (hasRolled && (tile.type === 'chance' || tile.type === 'challenge')) {
+                let infoLabel = tile.type === 'chance' ? 'Kotak Kesempatan' : 'Kotak Tantangan';
+                activeBtnGroup.innerHTML = `
+                    <p class="text-[10px] font-bold text-gray-500 text-center mb-0.5">${infoLabel}</p>
+                    <button onclick="triggerCardPopup()" class="w-full bg-amber-600 text-white font-bold py-2 px-1 rounded-xl text-xs shadow hover:bg-amber-700">Buka Kartu</button>
+                `;
             } else if (hasRolled && tile.type !== 'property') {
-                let infoLabel = tile.type === 'start' ? 'Kotak Start' : (tile.type === 'chance' ? 'Kotak Kesempatan' : 'Kotak Tantangan');
+                let infoLabel = 'Kotak Start';
                 activeBtnGroup.innerHTML = `
                     <p class="text-[10px] font-bold text-gray-500 text-center mb-0.5">${infoLabel}</p>
                     <button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-bold py-2 px-1 rounded-xl text-xs shadow hover:bg-gray-600">Lanjut Giliran</button>
@@ -395,19 +401,30 @@
                 if (currentTile.type === 'jail') {
                     player.inJail = true;
                     showPopup("🚨 PENJARA!", `Oh tidak! ${player.name} masuk ke kotak Penjara!`, "🚨");
-                } else if (currentTile.type === 'chance' || currentTile.type === 'challenge') {
-                    triggerCardPopup();
                 }
 
                 updateUI();
             });
         }
 
-        function showPopup(title, message, icon) {
+        function showPopup(title, message, icon, isCard = false, cardType = "") {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-icon').innerText = icon;
             document.getElementById('modal-content').innerText = message;
             
+            let closeBtn = document.getElementById('modal-close-btn');
+            if (isCard) {
+                if (cardType === 'chance') {
+                    closeBtn.innerText = "Kesempatan Selesai";
+                } else if (cardType === 'challenge') {
+                    closeBtn.innerText = "Tantangan Selesai";
+                }
+                closeBtn.setAttribute("onclick", "closeCardModalAndNext()");
+            } else {
+                closeBtn.innerText = "Sudah Selesai ✨";
+                closeBtn.setAttribute("onclick", "closeCardModal()");
+            }
+
             const modalBox = document.getElementById('modal-box');
             if (currentTurn === 1) {
                 modalBox.classList.add('flipped-container');
@@ -421,35 +438,32 @@
         function triggerCardPopup() {
             let currentTile = tiles[players[currentTurn].position];
             let cardText = "";
-            let modalTitle = document.getElementById('modal-title');
-            let modalIcon = document.getElementById('modal-icon');
+            let modalTitle = "";
+            let modalIcon = "";
 
             if(currentTile.type === 'chance') {
                 let rand = Math.floor(Math.random() * chanceCards.length);
                 cardText = chanceCards[rand];
-                modalTitle.innerText = "🌟 KARTU KESEMPATAN";
-                modalIcon.innerText = "🌟";
+                modalTitle = "🌟 KARTU KESEMPATAN";
+                modalIcon = "🌟";
             } else if(currentTile.type === 'challenge') {
                 let rand = Math.floor(Math.random() * challengeCards.length);
                 cardText = challengeCards[rand];
-                modalTitle.innerText = "🔥 KARTU TANTANGAN";
-                modalIcon.innerText = "🔥";
+                modalTitle = "🔥 KARTU TANTANGAN";
+                modalIcon = "🔥";
             }
 
-            document.getElementById('modal-content').innerText = `${players[currentTurn].name}, jalankan perintah ini:\n\n"${cardText}"`;
-            
-            const modalBox = document.getElementById('modal-box');
-            if (currentTurn === 1) {
-                modalBox.classList.add('flipped-container');
-            } else {
-                modalBox.classList.remove('flipped-container');
-            }
-
-            document.getElementById('card-modal').classList.remove('hidden');
+            let fullText = `${players[currentTurn].name}, jalankan perintah ini:\n\n"${cardText}"`;
+            showPopup(modalTitle, fullText, modalIcon, true, currentTile.type);
         }
 
         function closeCardModal() {
             document.getElementById('card-modal').classList.add('hidden');
+        }
+
+        function closeCardModalAndNext() {
+            document.getElementById('card-modal').classList.add('hidden');
+            nextTurn();
         }
 
         function jailRollDice() {
