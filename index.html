@@ -78,8 +78,8 @@
                         <div id="p2-action-panel" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center text-center min-h-[45px]">
                             <!-- Status Keterangan Giliran -->
                         </div>
-                        <button id="p2-roll-btn" onclick="rollDice()" class="w-full bg-green-600 text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-green-700 transition">
-                            🎲 Lempar Dadu
+                        <button id="p2-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-red-800 transition">
+                            Lempar Dadu
                         </button>
                     </div>
 
@@ -152,8 +152,8 @@
                     <div id="p1-action-panel" class="bg-white monopoly-border rounded-xl p-2 shadow flex flex-col justify-center text-center min-h-[45px]">
                         <!-- Status Keterangan Giliran -->
                     </div>
-                    <button id="p1-roll-btn" onclick="rollDice()" class="w-full bg-green-600 text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-green-700 transition">
-                        🎲 Lempar Dadu
+                    <button id="p1-roll-btn" onclick="rollDice()" class="w-full monopoly-red text-white font-black text-xs py-3 rounded-xl shadow-lg hover:bg-red-800 transition">
+                        Lempar Dadu
                     </button>
                 </div>
 
@@ -325,7 +325,7 @@
                     <p class="text-[10px] font-bold text-red-800 text-center mb-0.5">Area Penjara</p>
                     <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-amber-700">Bayar Denda (5 Juta)</button>
                     <button onclick="jailAcceptChallenge()" class="w-full bg-purple-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-purple-700">Tantangan Bebas</button>
-                    <button onclick="jailRollDice()" class="w-full bg-green-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-green-700">🎲 Lempar Dadu (6)</button>
+                    <button onclick="jailRollDice()" class="w-full monopoly-red text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-red-800">Lempar Dadu (6)</button>
                 `;
                 return;
             }
@@ -363,14 +363,8 @@
                     `;
                     setTimeout(() => nextTurn(), 1200);
                 }
-            } else if (hasRolled && (tile.type === 'chance' || tile.type === 'challenge')) {
-                let infoLabel = tile.type === 'chance' ? 'Kotak Kesempatan' : 'Kotak Tantangan';
-                activeBtnGroup.innerHTML = `
-                    <p class="text-[10px] font-bold text-gray-500 text-center mb-0.5">${infoLabel}</p>
-                    <button onclick="triggerCardPopup()" class="w-full bg-amber-600 text-white font-bold py-2 px-1 rounded-xl text-xs shadow hover:bg-amber-700">Buka Kartu</button>
-                `;
             } else if (hasRolled && tile.type !== 'property') {
-                let infoLabel = tile.type === 'start' ? 'Kotak Start' : 'Kotak Informasi';
+                let infoLabel = tile.type === 'start' ? 'Kotak Start' : (tile.type === 'chance' ? 'Kotak Kesempatan' : 'Kotak Tantangan');
                 activeBtnGroup.innerHTML = `
                     <p class="text-[10px] font-bold text-gray-500 text-center mb-0.5">${infoLabel}</p>
                     <button onclick="nextTurn()" class="w-full bg-gray-500 text-white font-bold py-2 px-1 rounded-xl text-xs shadow hover:bg-gray-600">Lanjut Giliran</button>
@@ -390,7 +384,7 @@
                 if (newPos >= tiles.length) {
                     newPos = newPos % tiles.length;
                     player.money += 2000000;
-                    showPopup("🎉 BONUS START!", `Yeay! ${player.name} melewati/mencapai garis START dan mendapatkan bonus Rp 2.000.000 dari Bank Central! 💰`, "💰", false);
+                    showPopup("🎉 BONUS START!", `Yeay! ${player.name} melewati/mencapai garis START dan mendapatkan bonus Rp 2.000.000 dari Bank Central! 💰`, "💰");
                 }
 
                 player.position = newPos;
@@ -400,27 +394,21 @@
 
                 if (currentTile.type === 'jail') {
                     player.inJail = true;
-                    showPopup("🚨 PENJARA!", `Oh tidak! ${player.name} masuk ke kotak Penjara!`, "🚨", true);
+                    showPopup("🚨 PENJARA!", `Oh tidak! ${player.name} masuk ke kotak Penjara!`, "🚨");
+                } else if (currentTile.type === 'chance' || currentTile.type === 'challenge') {
+                    triggerCardPopup();
                 }
 
                 updateUI();
             });
         }
 
-        function showPopup(title, message, icon, autoNext = false) {
+        function showPopup(title, message, icon) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-icon').innerText = icon;
             document.getElementById('modal-content').innerText = message;
             
             const modalBox = document.getElementById('modal-box');
-            let modalBtn = modalBox.querySelector('button');
-            
-            if (autoNext) {
-                modalBtn.setAttribute('onclick', 'closeCardModalAndNext()');
-            } else {
-                modalBtn.setAttribute('onclick', 'closeCardModal()');
-            }
-
             if (currentTurn === 1) {
                 modalBox.classList.add('flipped-container');
             } else {
@@ -451,9 +439,6 @@
             document.getElementById('modal-content').innerText = `${players[currentTurn].name}, jalankan perintah ini:\n\n"${cardText}"`;
             
             const modalBox = document.getElementById('modal-box');
-            let modalBtn = modalBox.querySelector('button');
-            modalBtn.setAttribute('onclick', 'closeCardModalAndNext()');
-
             if (currentTurn === 1) {
                 modalBox.classList.add('flipped-container');
             } else {
@@ -467,21 +452,16 @@
             document.getElementById('card-modal').classList.add('hidden');
         }
 
-        function closeCardModalAndNext() {
-            document.getElementById('card-modal').classList.add('hidden');
-            nextTurn();
-        }
-
         function jailRollDice() {
             executeRoll((diceRoll) => {
                 let player = players[currentTurn];
                 if (diceRoll === 6) {
                     player.inJail = false;
-                    showPopup("🎉 BEBAS!", `Hore! ${player.name} mendapatkan angka 6 dan berhasil keluar dari penjara!`, "🎉", true);
+                    showPopup("🎉 BEBAS!", `Hore! ${player.name} mendapatkan angka 6 dan berhasil keluar dari penjara!`, "🎉");
                     updateUI();
                 } else {
-                    showPopup("❌ BELUM BERHASIL", `Yah, dadu menunjukkan angka ${diceRoll}. Kamu belum berhasil keluar dari penjara.`, "❌", true);
-                    updateUI();
+                    showPopup("❌ BELUM BERHASIL", `Yah, dadu menunjukkan angka ${diceRoll}. Kamu belum berhasil keluar dari penjara.`, "❌");
+                    nextTurn();
                 }
             });
         }
@@ -492,10 +472,10 @@
             if (player.money >= fine) {
                 player.money -= fine;
                 player.inJail = false;
-                showPopup("💸 BEBAS DENDA", `${player.name} membayar denda Rp 5.000.000 dan bebas dari penjara!`, "💸", true);
+                showPopup("💸 BEBAS DENDA", `${player.name} membayar denda Rp 5.000.000 dan bebas dari penjara!`, "💸");
                 updateUI();
             } else {
-                showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membayar denda penjara!", "⚠️", false);
+                showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membayar denda penjara!", "⚠️");
             }
         }
 
@@ -503,7 +483,7 @@
             let player = players[currentTurn];
             let rand = Math.floor(Math.random() * challengeCards.length);
             player.inJail = false;
-            showPopup("✨ BEBAS DENGAN TANTANGAN", `${player.name} memilih tantangan untuk bebas:\n\n🔥 "${challengeCards[rand]}"\n\nSelamat, kamu bebas dari penjara!`, "✨", true);
+            showPopup("✨ BEBAS DENGAN TANTANGAN", `${player.name} memilih tantangan untuk bebas:\n\n🔥 "${challengeCards[rand]}"\n\nSelamat, kamu bebas dari penjara!`, "✨");
             updateUI();
         }
 
@@ -539,10 +519,10 @@
                 tile.owner = currentTurn;
                 tile.buyoutCount = 0;
                 player.properties.push(tile.name);
-                showPopup("🎉 PEMBELIAN BERHASIL", `Yeay! ${player.name} berhasil membeli ${tile.name}!`, "🎉", true);
-                updateUI();
+                showPopup("🎉 PEMBELIAN BERHASIL", `Yeay! ${player.name} berhasil membeli ${tile.name}!`, "🎉");
+                nextTurn();
             } else {
-                showPopup("⚠️ SALDO KURANG", "Duh, uang kamu tidak cukup untuk membeli aset ini, sayang!", "⚠️", false);
+                showPopup("⚠️ SALDO KURANG", "Duh, uang kamu tidak cukup untuk membeli aset ini, sayang!", "⚠️");
             }
         }
 
@@ -555,10 +535,10 @@
             if (player.money >= taxAmount) {
                 player.money -= taxAmount;
                 owner.money += taxAmount;
-                showPopup("💸 BAYAR PAJAK", `${player.name} membayar pajak masuk sebesar Rp ${taxAmount.toLocaleString('id-ID')} kepada ${owner.name}.`, "💸", true);
-                updateUI();
+                showPopup("💸 BAYAR PAJAK", `${player.name} membayar pajak masuk sebesar Rp ${taxAmount.toLocaleString('id-ID')} kepada ${owner.name}.`, "💸");
+                nextTurn();
             } else {
-                showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membayar pajak masuk kota ini!", "⚠️", false);
+                showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membayar pajak masuk kota ini!", "⚠️");
             }
         }
 
@@ -578,10 +558,10 @@
                 tile.buyoutCount++;
                 player.properties.push(tile.name);
 
-                showPopup("🏢 BUYOUT BERHASIL", `Hebat! ${player.name} berhasil melakukan buyout ${tile.name} seharga Rp ${buyoutPrice.toLocaleString('id-ID')} dari ${prevOwner.name}!`, "🏢", true);
-                updateUI();
+                showPopup("🏢 BUYOUT BERHASIL", `Hebat! ${player.name} berhasil melakukan buyout ${tile.name} seharga Rp ${buyoutPrice.toLocaleString('id-ID')} dari ${prevOwner.name}!`, "🏢");
+                nextTurn();
             } else {
-                showPopup("⚠️ SALDO KURANG", "Duh, uang kamu kurang untuk melakukan pembelian alih (buyout) aset ini!", "⚠️", false);
+                showPopup("⚠️ SALDO KURANG", "Duh, uang kamu kurang untuk melakukan pembelian alih (buyout) aset ini!", "⚠️");
             }
         }
 
