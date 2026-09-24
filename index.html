@@ -26,6 +26,43 @@
         .flipped-container {
             transform: scaleX(-1) scaleY(-1);
         }
+
+        /* Styling Slider Volume Kustom (Gaya Game Kasual Referensi) */
+        .game-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        .game-slider:focus {
+            outline: none;
+        }
+        /* Trek background slider */
+        .game-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 18px;
+            cursor: pointer;
+            background: linear-gradient(to right, #f59e0b 0%, #f59e0b var(--value-percent, 100%), #78350f var(--value-percent, 100%), #78350f 100%);
+            border-radius: 9999px;
+            border: 2px solid #5a1e00;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        /* Tombol handle (thumb) slider vertikal hijau khas */
+        .game-slider::-webkit-slider-thumb {
+            height: 28px;
+            width: 18px;
+            border-radius: 6px;
+            background: #84cc16;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            border: 2px solid #3f6212;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            /* Icon pause (dua garis putih vertikal) di dalam thumb */
+            background-image: linear-gradient(to right, #ffffff 35%, transparent 35%, transparent 65%, #ffffff 65%);
+            background-size: 6px 12px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
     </style>
 </head>
 <body class="bg-[#5a0000] text-gray-800 font-sans min-h-screen flex flex-col items-center justify-between p-2 relative max-w-md mx-auto">
@@ -61,14 +98,28 @@
             <!-- TOMBOL PANDUAN BERMAIN -->
             <button onclick="openGuideModal()" class="w-full bg-amber-600 text-white font-bold py-2.5 rounded-xl shadow-lg hover:bg-amber-700 transition text-sm">📖 Panduan Bermain</button>
             
-            <!-- TOMBOL AUDIO (MUSIK & SOUND EFFECT) DI BAWAH PANDUAN BERMAIN -->
-            <div class="grid grid-cols-2 gap-2 pt-1">
-                <button id="btn-music" onclick="toggleMusic()" class="w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1">
-                    <span>🎵 Musik: ON</span>
-                </button>
-                <button id="btn-sound" onclick="toggleSound()" class="w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1">
-                    <span>🔊 Sound: ON</span>
-                </button>
+            <!-- PENGATUR AUDIO (SLIDER GAYA REFERENSI) -->
+            <div class="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-3.5 space-y-3 shadow-inner">
+                <!-- Sound Effect Slider -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 flex items-center justify-center bg-amber-600 rounded-xl shadow border border-amber-800 text-white cursor-pointer" onclick="toggleMuteSound()" title="Mute/Unmute Sound">
+                        <!-- Icon Speaker -->
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    </div>
+                    <div class="flex-1 relative flex items-center">
+                        <input type="range" id="sound-slider" class="game-slider" min="0" max="1" step="0.05" value="1" oninput="setSoundVolume(this.value); updateSliderProgress(this);">
+                    </div>
+                </div>
+                <!-- Music Slider -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 flex items-center justify-center bg-amber-600 rounded-xl shadow border border-amber-800 text-white cursor-pointer" onclick="toggleMuteMusic()" title="Mute/Unmute Music">
+                        <!-- Icon Nota Musik -->
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                    </div>
+                    <div class="flex-1 relative flex items-center">
+                        <input type="range" id="music-slider" class="game-slider" min="0" max="1" step="0.05" value="1" oninput="setMusicVolume(this.value); updateSliderProgress(this);">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -226,37 +277,55 @@
         let hasRolled = false; 
         const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
-        // State Audio Control
-        let musicEnabled = true;
-        let soundEnabled = true;
+        let previousMusicVolume = 1;
+        let previousSoundVolume = 1;
 
-        function toggleMusic() {
-            musicEnabled = !musicEnabled;
-            const bgm = document.getElementById('bgm');
-            const btn = document.getElementById('btn-music');
-            
-            if (musicEnabled) {
-                btn.className = "w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
-                btn.innerHTML = "<span>🎵 Musik: ON</span>";
-                bgm.play().catch(e => console.log("BGM play error:", e));
-            } else {
-                btn.className = "w-full bg-red-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
-                btn.innerHTML = "<span>🎵 Musik: OFF</span>";
-                bgm.pause();
-            }
+        // Inisialisasi tampilan progres slider saat load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.game-slider').forEach(slider => {
+                updateSliderProgress(slider);
+            });
+        });
+
+        function updateSliderProgress(slider) {
+            const percent = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+            slider.style.setProperty('--value-percent', `${percent}%`);
         }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            const btn = document.getElementById('btn-sound');
-            
-            if (soundEnabled) {
-                btn.className = "w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
-                btn.innerHTML = "<span>🔊 Sound: ON</span>";
+        function setMusicVolume(val) {
+            const bgm = document.getElementById('bgm');
+            bgm.volume = parseFloat(val);
+            if (val > 0) previousMusicVolume = val;
+        }
+
+        function setSoundVolume(val) {
+            const diceSound = document.getElementById('dice-sound');
+            diceSound.volume = parseFloat(val);
+            if (val > 0) previousSoundVolume = val;
+        }
+
+        function toggleMuteMusic() {
+            const slider = document.getElementById('music-slider');
+            if (parseFloat(slider.value) > 0) {
+                previousMusicVolume = slider.value;
+                slider.value = 0;
             } else {
-                btn.className = "w-full bg-red-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
-                btn.innerHTML = "<span>🔊 Sound: OFF</span>";
+                slider.value = previousMusicVolume > 0 ? previousMusicVolume : 1;
             }
+            setMusicVolume(slider.value);
+            updateSliderProgress(slider);
+        }
+
+        function toggleMuteSound() {
+            const slider = document.getElementById('sound-slider');
+            if (parseFloat(slider.value) > 0) {
+                previousSoundVolume = slider.value;
+                slider.value = 0;
+            } else {
+                slider.value = previousSoundVolume > 0 ? previousSoundVolume : 1;
+            }
+            setSoundVolume(slider.value);
+            updateSliderProgress(slider);
         }
 
         function startGame() {
@@ -274,11 +343,10 @@
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
 
-            // Play background music on start if enabled
-            if (musicEnabled) {
-                const bgm = document.getElementById('bgm');
-                bgm.play().catch(e => console.log("BGM autoplay restriction:", e));
-            }
+            const bgm = document.getElementById('bgm');
+            const musicVal = document.getElementById('music-slider').value;
+            bgm.volume = parseFloat(musicVal);
+            bgm.play().catch(e => console.log("BGM autoplay restriction:", e));
 
             updateUI();
         }
@@ -295,7 +363,7 @@
    - Jika mendarat di kota milik pasanganmu, kamu wajib membayar pajak kunjungan sebesar <strong>10%</strong> dari harga dasar kota tersebut kepada pemiliknya.<br><br>
 5. <strong>Aturan Buyout (Pengambilalihan Kota):</strong><br>
    - <em>Pembelian / Buyout Pertama:</em> Harganya adalah 1.5x lipat dari harga dasar kota.<br>
-   - <em>Pembelian Selanjutnya:</em> Harga buyout akan bertambah 10% dari harga dasar untuk setiap kali kota tersebut berpindah tangan (akumulasi kenaikan bertingkat).<br><br>
+   - <em>Pembelian Selanjutnya:</em> Harga buyout akan bertambah 10% dari harga dasar untuk setiap kali kota tersebut berpindah tangan.<br><br>
 6. <strong>Kotak Kesempatan & Tantangan:</strong><br>
    - Berisi misi-misi seru, gombalan, dan tantangan romantis yang harus dilakukan bersama doi.<br><br>
 7. <strong>Kotak Penjara:</strong><br>
@@ -435,12 +503,10 @@
         function rollDice() {
             if (hasRolled) return;
             
-            if (soundEnabled) {
-                const diceSound = document.getElementById('dice-sound');
-                if (diceSound) {
-                    diceSound.currentTime = 0;
-                    diceSound.play().catch(e => console.log("Audio play error:", e));
-                }
+            const diceSound = document.getElementById('dice-sound');
+            if (diceSound) {
+                diceSound.currentTime = 0;
+                diceSound.play().catch(e => console.log("Audio play error:", e));
             }
 
             executeRoll((diceRoll) => {
@@ -510,12 +576,10 @@
         }
 
         function jailRollDice() {
-            if (soundEnabled) {
-                const diceSound = document.getElementById('dice-sound');
-                if (diceSound) {
-                    diceSound.currentTime = 0;
-                    diceSound.play().catch(e => console.log("Audio play error:", e));
-                }
+            const diceSound = document.getElementById('dice-sound');
+            if (diceSound) {
+                diceSound.currentTime = 0;
+                diceSound.play().catch(e => console.log("Audio play error:", e));
             }
 
             executeRoll((diceRoll) => {
