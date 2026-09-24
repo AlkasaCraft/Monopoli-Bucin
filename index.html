@@ -57,7 +57,6 @@
             margin-top: -7px;
             border: 2px solid #3f6212;
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            /* Icon pause (dua garis putih vertikal) di dalam thumb */
             background-image: linear-gradient(to right, #ffffff 35%, transparent 35%, transparent 65%, #ffffff 65%);
             background-size: 6px 12px;
             background-repeat: no-repeat;
@@ -98,12 +97,11 @@
             <!-- TOMBOL PANDUAN BERMAIN -->
             <button onclick="openGuideModal()" class="w-full bg-amber-600 text-white font-bold py-2.5 rounded-xl shadow-lg hover:bg-amber-700 transition text-sm">📖 Panduan Bermain</button>
             
-            <!-- PENGATUR AUDIO (SLIDER GAYA REFERENSI DENGAN MUTE ICON OTOMATIS) -->
+            <!-- PENGATUR AUDIO -->
             <div class="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-3.5 space-y-3 shadow-inner">
                 <!-- Sound Effect Slider -->
                 <div class="flex items-center space-x-3">
                     <div id="sound-icon-btn" class="w-9 h-9 flex items-center justify-center bg-amber-600 rounded-xl shadow border border-amber-800 text-white cursor-pointer" onclick="toggleMuteSound()" title="Mute/Unmute Sound">
-                        <!-- Icon Speaker Default -->
                         <svg id="sound-svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                     </div>
                     <div class="flex-1 relative flex items-center">
@@ -113,7 +111,6 @@
                 <!-- Music Slider -->
                 <div class="flex items-center space-x-3">
                     <div id="music-icon-btn" class="w-9 h-9 flex items-center justify-center bg-amber-600 rounded-xl shadow border border-amber-800 text-white cursor-pointer" onclick="toggleMuteMusic()" title="Mute/Unmute Music">
-                        <!-- Icon Music Default -->
                         <svg id="music-svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                     </div>
                     <div class="flex-1 relative flex items-center">
@@ -280,13 +277,14 @@
         let previousMusicVolume = 1;
         let previousSoundVolume = 1;
 
-        // Inisialisasi tampilan awal slider & icon
         window.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.game-slider').forEach(slider => {
                 updateSliderProgress(slider);
             });
             updateMusicIcon(1);
             updateSoundIcon(1);
+            // Inisialisasi awal volume sound effect di elemen audio
+            document.getElementById('dice-sound').volume = document.getElementById('sound-slider').value;
         });
 
         function updateSliderProgress(slider) {
@@ -294,11 +292,9 @@
             slider.style.setProperty('--value-percent', `${percent}%`);
         }
 
-        // SVG Path untuk Speaker aktif dan Muted (silang)
         const speakerActiveSvg = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
         const speakerMuteSvg = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
 
-        // SVG Path untuk Musik aktif dan Muted (silang)
         const musicActiveSvg = '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>';
         const musicMuteSvg = '<path d="M4.27 3L3 4.27 9 10.27V13.5c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4v-1.73l7.73 7.73L21 19.73 4.27 3zM14 7h4V3h-6v5.18l2 2V7z"/>';
 
@@ -312,14 +308,13 @@
             svg.innerHTML = parseFloat(val) === 0 ? musicMuteSvg : musicActiveSvg;
         }
 
-        // Fungsi saat slider Sound digeser langsung (mengeluarkan suara preview dadu jika volume > 0)
         function onSoundSliderInput(slider) {
             const val = parseFloat(slider.value);
             const diceSound = document.getElementById('dice-sound');
             diceSound.volume = val;
+            
             if (val > 0) {
                 previousSoundVolume = val;
-                // Preview sound effect jika digeser hidup
                 diceSound.currentTime = 0;
                 diceSound.play().catch(e => console.log("Sound preview error:", e));
             }
@@ -327,7 +322,6 @@
             updateSoundIcon(val);
         }
 
-        // Fungsi saat slider Music digeser langsung (memainkan backsound secara real-time)
         function onMusicSliderInput(slider) {
             const val = parseFloat(slider.value);
             const bgm = document.getElementById('bgm');
@@ -544,7 +538,10 @@
             if (hasRolled) return;
             
             const diceSound = document.getElementById('dice-sound');
-            if (diceSound && diceSound.volume > 0) {
+            // Hanya mainkan suara lempar dadu jika volume slider sound > 0
+            const soundSliderVal = parseFloat(document.getElementById('sound-slider').value);
+            if (diceSound && soundSliderVal > 0) {
+                diceSound.volume = soundSliderVal;
                 diceSound.currentTime = 0;
                 diceSound.play().catch(e => console.log("Audio play error:", e));
             }
@@ -617,7 +614,9 @@
 
         function jailRollDice() {
             const diceSound = document.getElementById('dice-sound');
-            if (diceSound && diceSound.volume > 0) {
+            const soundSliderVal = parseFloat(document.getElementById('sound-slider').value);
+            if (diceSound && soundSliderVal > 0) {
+                diceSound.volume = soundSliderVal;
                 diceSound.currentTime = 0;
                 diceSound.play().catch(e => console.log("Audio play error:", e));
             }
