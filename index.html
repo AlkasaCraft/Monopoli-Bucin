@@ -30,9 +30,12 @@
 </head>
 <body class="bg-[#5a0000] text-gray-800 font-sans min-h-screen flex flex-col items-center justify-between p-2 relative max-w-md mx-auto">
 
-    <!-- AUDIO SOUND EFFECT DADU (AMBIL DARI FOLDER LOKAL GITHUB) -->
+    <!-- AUDIO SOUND EFFECT DADU & BACKSOUND -->
     <audio id="dice-sound" preload="auto">
         <source src="dice-roll.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgm" loop preload="auto">
+        <source src="Backsound.mp3" type="audio/mpeg">
     </audio>
 
     <!-- SETUP SCREEN -->
@@ -57,6 +60,16 @@
 
             <!-- TOMBOL PANDUAN BERMAIN -->
             <button onclick="openGuideModal()" class="w-full bg-amber-600 text-white font-bold py-2.5 rounded-xl shadow-lg hover:bg-amber-700 transition text-sm">📖 Panduan Bermain</button>
+            
+            <!-- TOMBOL AUDIO (MUSIK & SOUND EFFECT) DI BAWAH PANDUAN BERMAIN -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <button id="btn-music" onclick="toggleMusic()" class="w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1">
+                    <span>🎵 Musik: ON</span>
+                </button>
+                <button id="btn-sound" onclick="toggleSound()" class="w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1">
+                    <span>🔊 Sound: ON</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -213,6 +226,39 @@
         let hasRolled = false; 
         const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
+        // State Audio Control
+        let musicEnabled = true;
+        let soundEnabled = true;
+
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            const bgm = document.getElementById('bgm');
+            const btn = document.getElementById('btn-music');
+            
+            if (musicEnabled) {
+                btn.className = "w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
+                btn.innerHTML = "<span>🎵 Musik: ON</span>";
+                bgm.play().catch(e => console.log("BGM play error:", e));
+            } else {
+                btn.className = "w-full bg-red-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
+                btn.innerHTML = "<span>🎵 Musik: OFF</span>";
+                bgm.pause();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('btn-sound');
+            
+            if (soundEnabled) {
+                btn.className = "w-full bg-green-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
+                btn.innerHTML = "<span>🔊 Sound: ON</span>";
+            } else {
+                btn.className = "w-full bg-red-600 text-white font-bold py-2 rounded-xl shadow-lg hover:opacity-90 transition text-xs flex items-center justify-center space-x-1";
+                btn.innerHTML = "<span>🔊 Sound: OFF</span>";
+            }
+        }
+
         function startGame() {
             const p1Val = document.getElementById('player1-name').value.trim();
             const p2Val = document.getElementById('player2-name').value.trim();
@@ -227,6 +273,12 @@
 
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
+
+            // Play background music on start if enabled
+            if (musicEnabled) {
+                const bgm = document.getElementById('bgm');
+                bgm.play().catch(e => console.log("BGM autoplay restriction:", e));
+            }
 
             updateUI();
         }
@@ -383,10 +435,12 @@
         function rollDice() {
             if (hasRolled) return;
             
-            const diceSound = document.getElementById('dice-sound');
-            if (diceSound) {
-                diceSound.currentTime = 0;
-                diceSound.play().catch(e => console.log("Audio play error:", e));
+            if (soundEnabled) {
+                const diceSound = document.getElementById('dice-sound');
+                if (diceSound) {
+                    diceSound.currentTime = 0;
+                    diceSound.play().catch(e => console.log("Audio play error:", e));
+                }
             }
 
             executeRoll((diceRoll) => {
@@ -456,10 +510,12 @@
         }
 
         function jailRollDice() {
-            const diceSound = document.getElementById('dice-sound');
-            if (diceSound) {
-                diceSound.currentTime = 0;
-                diceSound.play().catch(e => console.log("Audio play error:", e));
+            if (soundEnabled) {
+                const diceSound = document.getElementById('dice-sound');
+                if (diceSound) {
+                    diceSound.currentTime = 0;
+                    diceSound.play().catch(e => console.log("Audio play error:", e));
+                }
             }
 
             executeRoll((diceRoll) => {
