@@ -27,7 +27,6 @@
             transform: scaleX(-1) scaleY(-1);
         }
 
-        /* Styling Slider Volume Kustom (Gaya Game Kasual Referensi) */
         .game-slider {
             -webkit-appearance: none;
             width: 100%;
@@ -36,7 +35,6 @@
         .game-slider:focus {
             outline: none;
         }
-        /* Trek background slider */
         .game-slider::-webkit-slider-runnable-track {
             width: 100%;
             height: 18px;
@@ -46,7 +44,6 @@
             border: 2px solid #5a1e00;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
-        /* Tombol handle (thumb) slider vertikal hijau khas */
         .game-slider::-webkit-slider-thumb {
             height: 28px;
             width: 18px;
@@ -66,7 +63,6 @@
 </head>
 <body class="bg-[#5a0000] text-gray-800 font-sans min-h-screen flex flex-col items-center justify-between p-2 relative max-w-md mx-auto">
 
-    <!-- AUDIO SOUND EFFECT DADU & BACKSOUND -->
     <audio id="dice-sound" preload="auto">
         <source src="dice-roll.mp3" type="audio/mpeg">
     </audio>
@@ -91,15 +87,11 @@
             
             <button onclick="startGame()" class="w-full monopoly-red text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-800 transition">Mulai Permainan 🚀</button>
             
-            <!-- GARIS PEMISAH -->
             <div class="border-t border-red-200 my-2"></div>
 
-            <!-- TOMBOL PANDUAN BERMAIN -->
             <button onclick="openGuideModal()" class="w-full bg-amber-600 text-white font-bold py-2.5 rounded-xl shadow-lg hover:bg-amber-700 transition text-sm">📖 Panduan Bermain</button>
             
-            <!-- PENGATUR AUDIO -->
             <div class="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-3.5 space-y-3 shadow-inner">
-                <!-- Sound Effect Slider -->
                 <div class="flex items-center space-x-3">
                     <div id="sound-icon-btn" class="w-9 h-9 flex items-center justify-center bg-amber-600 rounded-xl shadow border border-amber-800 text-white cursor-pointer" onclick="toggleMuteSound()" title="Mute/Unmute Sound">
                         <svg id="sound-svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
@@ -108,7 +100,6 @@
                         <input type="range" id="sound-slider" class="game-slider" min="0" max="1" step="0.05" value="1" oninput="onSoundSliderInput(this)">
                     </div>
                 </div>
-                <!-- Music Slider -->
                 <div class="flex items-center space-x-3">
                     <div id="music-icon-btn" class="w-9 h-9 flex items-center justify-center bg-amber-600 rounded-xl shadow border border-amber-800 text-white cursor-pointer" onclick="toggleMuteMusic()" title="Mute/Unmute Music">
                         <svg id="music-svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
@@ -223,23 +214,24 @@
 
     <script>
         const tiles = [
-            { name: "START", type: "start", price: 0, buyoutCount: 0 },
-            { name: "Jakarta", type: "property", price: 500000, owner: null, buyoutCount: 0 },
-            { name: "Tantangan", type: "challenge", buyoutCount: 0 },
-            { name: "Bogor", type: "property", price: 800000, owner: null, buyoutCount: 0 },
-            { name: "Bandung", type: "property", price: 1200000, owner: null, buyoutCount: 0 },
-            { name: "Kesempatan", type: "chance", buyoutCount: 0 },
-            { name: "Malang", type: "property", price: 1600000, owner: null, buyoutCount: 0 },
-            { name: "Stasiun", type: "property", price: 2500000, owner: null, buyoutCount: 0 }, 
-            { name: "Surabaya", type: "property", price: 2000000, owner: null, buyoutCount: 0 },
-            { name: "Jogjakarta", type: "property", price: 2400000, owner: null, buyoutCount: 0 },
-            { name: "Kesempatan", type: "chance", buyoutCount: 0 },
-            { name: "Denpasar", type: "property", price: 3000000, owner: null, buyoutCount: 0 },
-            { name: "Tantangan", type: "challenge", buyoutCount: 0 },
-            { name: "Lampung", type: "property", price: 3500000, owner: null, buyoutCount: 0 },
-            { name: "Penjara", type: "jail", buyoutCount: 0 }, 
-            { name: "Pekanbaru", type: "property", price: 4000000, owner: null, buyoutCount: 0 },
-            { name: "Medan", type: "property", price: 4600000, owner: null, buyoutCount: 0 },
+            { name: "START", type: "start", price: 0, buyoutCount: 0 }, // 0
+            { name: "Jakarta", type: "property", price: 500000, owner: null, buyoutCount: 0 }, // 1
+            { name: "Tantangan", type: "challenge", buyoutCount: 0 }, // 2
+            { name: "Bogor", type: "property", price: 800000, owner: null, buyoutCount: 0 }, // 3
+            { name: "Bandung", type: "property", price: 1200000, owner: null, buyoutCount: 0 }, // 4
+            { name: "Kesempatan", type: "chance", buyoutCount: 0 }, // 5
+            { name: "Malang", type: "property", price: 1600000, owner: null, buyoutCount: 0 }, // 6
+            { name: "Stasiun", type: "property", price: 2500000, owner: null, buyoutCount: 0 }, // 7
+            { name: "Surabaya", type: "property", price: 2000000, owner: null, buyoutCount: 0 }, // 8
+            { name: "Jogjakarta", type: "property", price: 2400000, owner: null, buyoutCount: 0 }, // 9
+            { name: "Kesempatan", type: "chance", buyoutCount: 0 }, // 10
+            { name: "Denpasar", type: "property", price: 3000000, owner: null, buyoutCount: 0 }, // 11
+            { name: "Tantangan", type: "challenge", buyoutCount: 0 }, // 12 -> Tantangan setelah Denpasar
+            { name: "Lampung", type: "property", price: 3500000, owner: null, buyoutCount: 0 }, // 13 -> Lampung
+            { name: "Penjara", type: "jail", buyoutCount: 0 }, // 14 -> Penjara
+            { name: "Tantangan", type: "challenge", buyoutCount: 0 }, // 15 -> Tantangan setelah Penjara
+            { name: "Pekanbaru", type: "property", price: 4000000, owner: null, buyoutCount: 0 }, // 16
+            { name: "Medan", type: "property", price: 4600000, owner: null, buyoutCount: 0 }, // 17
             { name: "Kesempatan", type: "chance", buyoutCount: 0 },
             { name: "Balikpapan", type: "property", price: 5300000, owner: null, buyoutCount: 0 },
             { name: "Banjarmasin", type: "property", price: 6000000, owner: null, buyoutCount: 0 },
@@ -283,7 +275,6 @@
             });
             updateMusicIcon(1);
             updateSoundIcon(1);
-            // Inisialisasi awal volume sound effect di elemen audio
             document.getElementById('dice-sound').volume = document.getElementById('sound-slider').value;
         });
 
@@ -400,8 +391,8 @@
    - <em>Pembelian Selanjutnya:</em> Harga buyout akan bertambah 10% dari harga dasar untuk setiap kali kota tersebut berpindah tangan.<br><br>
 6. <strong>Kotak Kesempatan & Tantangan:</strong><br>
    - Berisi misi-misi seru, gombalan, dan tantangan romantis yang harus dilakukan bersama doi.<br><br>
-7. <strong>Kotak Penjara:</strong><br>
-   - Jika masuk penjara, kamu harus bebas dengan membayar denda Rp 5 Juta, menerima tantangan khusus, atau melempar dadu mendapatkan angka 6.
+7. <strong>Kotak Penjara (Indeks #14):</strong><br>
+   - Jika masuk penjara, lempar dadu sampai dapat angka 6 atau bayar denda Rp 5 Juta. Setelah bebas, posisi pemain disiapkan dan giliran berikutnya berjalan dari kotak Tantangan (Indeks #15) sebagai titik awal langkahnya.
             `;
             showPopup("📖 PANDUAN BERMAIN", guideText, "📖");
         }
@@ -480,9 +471,8 @@
                 activePanel.innerHTML = `<span class="text-xs font-bold text-red-800">Di Penjara!</span>`;
                 activeBtnGroup.innerHTML = `
                     <p class="text-[10px] font-bold text-red-800 text-center mb-0.5">Area Penjara</p>
-                    <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-amber-700">Bayar Denda (5 Juta)</button>
-                    <button onclick="jailAcceptChallenge()" class="w-full bg-purple-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-purple-700">Tantangan Bebas</button>
-                    <button onclick="jailRollDice()" class="w-full bg-green-600 text-white font-bold py-1.5 px-1 rounded-lg text-[10px] shadow hover:bg-green-700">🎲 Lempar Dadu (6)</button>
+                    <button onclick="jailPayFine()" class="w-full bg-amber-600 text-white font-bold py-2 px-1 rounded-lg text-[11px] shadow hover:bg-amber-700">Bayar Denda (5 Juta)</button>
+                    <button onclick="jailRollDice()" class="w-full bg-green-600 text-white font-bold py-2 px-1 rounded-lg text-[11px] shadow hover:bg-green-700">🎲 Lempar Dadu (6)</button>
                 `;
                 return;
             }
@@ -538,7 +528,6 @@
             if (hasRolled) return;
             
             const diceSound = document.getElementById('dice-sound');
-            // Hanya mainkan suara lempar dadu jika volume slider sound > 0
             const soundSliderVal = parseFloat(document.getElementById('sound-slider').value);
             if (diceSound && soundSliderVal > 0) {
                 diceSound.volume = soundSliderVal;
@@ -625,11 +614,12 @@
                 let player = players[currentTurn];
                 if (diceRoll === 6) {
                     player.inJail = false;
-                    showPopup("🎉 BEBAS!", `Hore! ${player.name} mendapatkan angka 6 dan bebas dari penjara!`, "🎉");
+                    showPopup("🎉 BEBAS DARI PENJARA!", `Hore! ${player.name} mendapatkan angka 6 dan bebas! Pada giliran berikutnya, langkah akan dimulai dari kotak Tantangan (Indeks #15).`, "🎉");
                     updateUI();
+                    nextTurn(); 
                 } else {
-                    showPopup("❌ BELUM BERHASIL", `Dadu menunjukkan angka ${diceRoll}. Belum berhasil keluar.`, "❌");
-                    nextTurn();
+                    showPopup("❌ BELUM BERHASIL", `Dadu menunjukkan angka ${diceRoll}. Belum berhasil keluar dari penjara. Coba lagi di giliran berikutnya!`, "❌");
+                    nextTurn(); 
                 }
             });
         }
@@ -639,19 +629,13 @@
             if (player.money >= 5000000) {
                 player.money -= 5000000;
                 player.inJail = false;
-                showPopup("💸 BEBAS DENDA", `${player.name} membayar denda Rp 5.000.000 dan bebas!`, "💸");
+                
+                showPopup("💸 BEBAS DENDA", `${player.name} membayar denda Rp 5.000.000 dan berhasil bebas! Pada giliran berikutnya, langkah akan dimulai dari kotak Tantangan (Indeks #15).`, "💸");
                 updateUI();
+                nextTurn(); 
             } else {
                 showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membayar denda!", "⚠️");
             }
-        }
-
-        function jailAcceptChallenge() {
-            let player = players[currentTurn];
-            let randCard = challengeCards[Math.floor(Math.random() * challengeCards.length)];
-            player.inJail = false;
-            showPopup("✨ BEBAS", `${player.name} bebas dengan tantangan:<br><br>🔥 <strong>"${randCard}"</strong>`, "✨");
-            updateUI();
         }
 
         function executeRoll(callback) {
@@ -675,6 +659,37 @@
                 }
             }, 80);
         }
+
+        const originalRollDice = rollDice;
+        rollDice = function() {
+            let player = players[currentTurn];
+            if (!player.inJail && player.position === 14) {
+                if (hasRolled) return;
+                
+                const diceSound = document.getElementById('dice-sound');
+                const soundSliderVal = parseFloat(document.getElementById('sound-slider').value);
+                if (diceSound && soundSliderVal > 0) {
+                    diceSound.volume = soundSliderVal;
+                    diceSound.currentTime = 0;
+                    diceSound.play().catch(e => console.log("Audio play error:", e));
+                }
+
+                executeRoll((diceRoll) => {
+                    let startPos = 15;
+                    let newPos = startPos + (diceRoll - 1); 
+
+                    if (newPos >= tiles.length) {
+                        newPos = newPos % tiles.length;
+                        player.money += 2000000;
+                    }
+                    player.position = newPos;
+                    hasRolled = true;
+                    updateUI();
+                });
+            } else {
+                originalRollDice();
+            }
+        };
 
         function buyProperty() {
             let tile = tiles[players[currentTurn].position];
