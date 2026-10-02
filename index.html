@@ -137,14 +137,13 @@
                             <span id="p2-display-name">Pemain 2</span>
                         </div>
                         <div class="bg-white border-2 border-[#800000] rounded-xl py-2 px-2 text-center text-xs font-extrabold text-[#800000] shadow-sm truncate">
-                            Rp <span id="p2-money">15.000.000</span>
+                            Rp <span id="p2-money">10.000.000</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div class="flex flex-col space-y-2">
-                        <!-- KOTAK ASET DENGAN MAX TINGGI & SCROLL LANGSUNG DI SINI -->
                         <div class="bg-[#800000] text-white rounded-xl p-2 text-center shadow max-h-[4.2rem] overflow-y-auto asset-scroll-box flex flex-col">
                             <p class="text-xs font-bold mb-1 shrink-0">Aset / Biaya</p>
                             <p class="text-[11px] font-medium leading-tight text-red-100" id="p2-properties">Belum ada</p>
@@ -175,10 +174,12 @@
             <div class="flex items-center justify-center">
                 <div id="dice-wrapper" class="w-full text-center transition-transform duration-300">
                     <p class="text-[10px] font-bold text-red-900 mb-0.5" id="center-turn-label">Giliran Kamu</p>
-                    <div class="flex items-center justify-center space-x-3">
-                        <div id="dice-box" class="text-3xl font-black text-red-800">🎲 <span id="dice-icon">⚀</span></div>
-                        <div class="text-left">
-                            <p class="text-[9px] text-gray-600 leading-tight">Angka Dadu:</p>
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="w-8 h-8 border-2 border-[#800000] rounded flex items-center justify-center text-xl font-bold text-red-900 bg-red-50 shrink-0">
+                            <span id="dice-icon">⚀</span>
+                        </div>
+                        <div class="text-left leading-tight">
+                            <p class="text-[9px] text-gray-600 font-medium">Angka Dadu:</p>
                             <p id="dice-value" class="text-sm font-black text-red-900">-</p>
                         </div>
                     </div>
@@ -194,14 +195,13 @@
                         <span id="p1-display-name">Pemain 1</span>
                     </div>
                     <div class="bg-white border-2 border-[#800000] rounded-xl py-2 px-2 text-center text-xs font-extrabold text-[#800000] shadow-sm truncate">
-                        Rp <span id="p1-money">15.000.000</span>
+                        Rp <span id="p1-money">10.000.000</span>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2">
                 <div class="flex flex-col space-y-2">
-                    <!-- KOTAK ASET DENGAN MAX TINGGI & SCROLL LANGSUNG DI SINI -->
                     <div class="bg-[#800000] text-white rounded-xl p-2 text-center shadow max-h-[4.2rem] overflow-y-auto asset-scroll-box flex flex-col">
                         <p class="text-xs font-bold mb-1 shrink-0">Aset / Biaya</p>
                         <p class="text-[11px] font-medium leading-tight text-red-100" id="p1-properties">Belum ada</p>
@@ -229,24 +229,24 @@
 
     <script>
         const tiles = [
-            { name: "START", type: "start", price: 0, buyoutCount: 0 }, // 0
-            { name: "Jakarta", type: "property", price: 500000, owner: null, buyoutCount: 0 }, // 1
-            { name: "Tantangan", type: "challenge", buyoutCount: 0 }, // 2
-            { name: "Bogor", type: "property", price: 800000, owner: null, buyoutCount: 0 }, // 3
-            { name: "Bandung", type: "property", price: 1200000, owner: null, buyoutCount: 0 }, // 4
-            { name: "Kesempatan", type: "chance", buyoutCount: 0 }, // 5
-            { name: "Malang", type: "property", price: 1600000, owner: null, buyoutCount: 0 }, // 6
-            { name: "Stasiun", type: "property", price: 2500000, owner: null, buyoutCount: 0 }, // 7
-            { name: "Surabaya", type: "property", price: 2000000, owner: null, buyoutCount: 0 }, // 8
-            { name: "Jogjakarta", type: "property", price: 2400000, owner: null, buyoutCount: 0 }, // 9
-            { name: "Kesempatan", type: "chance", buyoutCount: 0 }, // 10
-            { name: "Denpasar", type: "property", price: 3000000, owner: null, buyoutCount: 0 }, // 11
-            { name: "Tantangan", type: "challenge", buyoutCount: 0 }, // 12 -> Tantangan setelah Denpasar
-            { name: "Lampung", type: "property", price: 3500000, owner: null, buyoutCount: 0 }, // 13 -> Lampung
-            { name: "Penjara", type: "jail", buyoutCount: 0 }, // 14 -> Penjara
-            { name: "Tantangan", type: "challenge", buyoutCount: 0 }, // 15 -> Tantangan setelah Penjara
-            { name: "Pekanbaru", type: "property", price: 4000000, owner: null, buyoutCount: 0 }, // 16
-            { name: "Medan", type: "property", price: 4600000, owner: null, buyoutCount: 0 }, // 17
+            { name: "START", type: "start", price: 0, buyoutCount: 0 },
+            { name: "Jakarta", type: "property", price: 500000, owner: null, buyoutCount: 0 },
+            { name: "Tantangan", type: "challenge", buyoutCount: 0 },
+            { name: "Bogor", type: "property", price: 800000, owner: null, buyoutCount: 0 },
+            { name: "Bandung", type: "property", price: 1200000, owner: null, buyoutCount: 0 },
+            { name: "Kesempatan", type: "chance", buyoutCount: 0 },
+            { name: "Malang", type: "property", price: 1600000, owner: null, buyoutCount: 0 },
+            { name: "Stasiun", type: "property", price: 2500000, owner: null, buyoutCount: 0 },
+            { name: "Surabaya", type: "property", price: 2000000, owner: null, buyoutCount: 0 },
+            { name: "Jogjakarta", type: "property", price: 2400000, owner: null, buyoutCount: 0 },
+            { name: "Kesempatan", type: "chance", buyoutCount: 0 },
+            { name: "Denpasar", type: "property", price: 3000000, owner: null, buyoutCount: 0 },
+            { name: "Tantangan", type: "challenge", buyoutCount: 0 },
+            { name: "Lampung", type: "property", price: 3500000, owner: null, buyoutCount: 0 },
+            { name: "Penjara", type: "jail", buyoutCount: 0 },
+            { name: "Tantangan", type: "challenge", buyoutCount: 0 },
+            { name: "Pekanbaru", type: "property", price: 4000000, owner: null, buyoutCount: 0 },
+            { name: "Medan", type: "property", price: 4600000, owner: null, buyoutCount: 0 },
             { name: "Kesempatan", type: "chance", buyoutCount: 0 },
             { name: "Balikpapan", type: "property", price: 5300000, owner: null, buyoutCount: 0 },
             { name: "Banjarmasin", type: "property", price: 6000000, owner: null, buyoutCount: 0 },
@@ -260,22 +260,28 @@
         ];
 
         const chanceCards = [
-            "Tatap mata doi mu lalu bilang 'I Love You' dengan tulus.",
-            "Pegang tangan doi mu selama 3 giliran permainan berikutnya.",
-            "Puji 3 hal manis tentang doi mu sekarang juga!",
-            "Kirimkan sticker gombal paling lucu ke WhatsApp doi mu."
+            "Selamat kamu mendapatkan kalimat romantis dari [LAVON]",
+            "Selamat kamu berhak menentukan 1x tempat date berikutnya",
+            "Selamat kamu mendapatkan snack gratis dari [LAVON], [LAVON] wajib traktir!",
+            "Selamat kamu berhak menentukan 1x film untuk movie date berikutnya",
+            "Selamat kamu berhak memberikan 1 panggilan sayang baru untuk [LAVON]"
         ];
 
         const challengeCards = [
-            "Beliin 1 minuman favorit untuk doi mu!",
-            "Jilat saos dengan 1 jari di depan doi mu.",
-            "Buat story Instagram/WA dengan foto doi mu sekarang.",
-            "Pipi kamu dicubit gemes sama doi mu selama 5 detik."
+            "[ME] jalankan perintah ini: Bikin [LAVON] tertawa dalam waktu 30 detik",
+            "Kamu wajib monyong selamat 1 putaran / kembali ke garis start",
+            "Gombalin [LAVON] sampai dia salting.",
+            "Nyanyiin lagu yang paling ngingetin kamu sama [LAVON].",
+            "Kirim chat bucin ke [LAVON], padahal dia duduk di depanmu.",
+            "Bilang “aku sayang kamu” dengan gaya paling absurd.",
+            "Spill 1 hal yang bikin kamu makin sayang sama [LAVON].",
+            "Sebut 3 hal yang bikin kamu jatuh cinta sama [LAVON].",
+            "Ganti Photo Profil kamu dengan foto [LAVON]"
         ];
 
         let players = [
-            { id: 0, name: "Pemain 1", money: 15000000, position: 0, properties: [], inJail: false },
-            { id: 1, name: "Pemain 2", money: 15000000, position: 0, properties: [], inJail: false }
+            { id: 0, name: "Pemain 1", money: 10000000, position: 0, properties: [], inJail: false },
+            { id: 1, name: "Pemain 2", money: 10000000, position: 0, properties: [], inJail: false }
         ];
         let currentTurn = 0; 
         let hasRolled = false; 
@@ -396,7 +402,7 @@
 <strong>📜 TATA CARA & ATURAN BERMAIN MONOPOLI BUCIN:</strong><br><br>
 1. <strong>Tujuan Permainan:</strong> Kumpulkan aset kota terbanyak dan jaga saldo uangmu agar tidak habis bersama pasangan!<br><br>
 2. <strong>Garis / Kotak START:</strong><br>
-   - Setiap pemain yang melewati atau mendarat di kotak <strong>START</strong> berhak mendapatkan bonus gaji sebesar <strong>Rp 2.000.000</strong> dari Bank Central.<br><br>
+   - Setiap pemain yang melewati atau mendarat di kotak <strong>START</strong> berhak mendapatkan bonus gaji sebesar <strong>Rp 500.000</strong> dari Bank Central.<br><br>
 3. <strong>Pembelian Kota / Properti:</strong><br>
    - Jika mendarat di kota yang belum bertuan, kamu bisa membelinya sesuai harga kota tersebut.<br><br>
 4. <strong>Pajak & Kota Milik Lawan:</strong><br>
@@ -550,15 +556,15 @@
                 diceSound.play().catch(e => console.log("Audio play error:", e));
             }
 
-            executeRoll((diceRoll) => {
+            showDiceRollPopup((diceRoll) => {
                 let player = players[currentTurn];
                 let oldPos = player.position;
                 let newPos = oldPos + diceRoll;
 
                 if (newPos >= tiles.length) {
                     newPos = newPos % tiles.length;
-                    player.money += 2000000;
-                    showPopup("🎉 BONUS START!", `Yeay! ${player.name} melewati/mencapai garis START dan mendapatkan bonus Rp 2.000.000! 💰`, "💰");
+                    player.money += 500000;
+                    showPopup("🎉 BONUS START!", `Yeay! ${player.name} melewati/mencapai garis START dan mendapatkan bonus Rp 500.000! 💰`, "💰");
                 }
 
                 player.position = newPos;
@@ -598,21 +604,127 @@
             document.getElementById('card-modal').classList.remove('hidden');
         }
 
+        function showDiceRollPopup(onComplete) {
+            let modalBox = document.getElementById('modal-box');
+            
+            modalBox.innerHTML = `
+                <h3 id="modal-title" class="text-xl font-black text-red-900 mb-2">🎲 ACAK DADU</h3>
+                
+                <div id="modal-icon" class="mb-3">
+                    <div class="border-2 border-dashed border-red-300 rounded-2xl p-3 bg-red-50/30 flex items-center justify-around">
+                        <div class="w-20 h-20 border-2 border-[#800000] rounded-xl flex items-center justify-center text-4xl font-bold text-red-900 bg-white shrink-0 shadow-sm">
+                            <span id="popup-dice-icon" class="dice-animating">⚀</span>
+                        </div>
+                        <div class="h-16 w-[1px] bg-red-300 mx-2"></div>
+                        <div class="text-left leading-tight flex-1 pl-2">
+                            <p class="text-sm font-bold text-red-900 mb-1">Giliran Kamu</p>
+                            <p class="text-xs text-gray-600 font-medium">Angka Dadu:</p>
+                            <p class="text-2xl font-black text-red-900" id="popup-dice-val">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modal-content" class="bg-red-50 p-4 rounded-xl text-sm font-medium text-red-900 border border-dashed border-red-300 text-center mb-4">
+                    <p class="text-xs font-semibold text-gray-700">${players[currentTurn].name} sedang mengocok dadu...</p>
+                </div>
+
+                <button id="modal-close-btn" class="w-full monopoly-red text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-800 transition opacity-50 cursor-not-allowed" disabled>Memproses...</button>
+            `;
+
+            if (currentTurn === 1) {
+                modalBox.classList.add('flipped-container');
+            } else {
+                modalBox.classList.remove('flipped-container');
+            }
+
+            document.getElementById('card-modal').classList.remove('hidden');
+
+            let counter = 0;
+            let shuffleInterval = setInterval(() => {
+                let randomSymbol = diceSymbols[Math.floor(Math.random() * 6)];
+                let popIconElem = document.getElementById('popup-dice-icon');
+                if(popIconElem) popIconElem.innerText = randomSymbol;
+                counter++;
+                
+                if (counter > 10) {
+                    clearInterval(shuffleInterval);
+                    const diceRoll = Math.floor(Math.random() * 6) + 1;
+                    
+                    document.getElementById('dice-icon').innerText = diceSymbols[diceRoll - 1];
+                    document.getElementById('dice-value').innerText = diceRoll;
+
+                    if(document.getElementById('popup-dice-icon')) {
+                        document.getElementById('popup-dice-icon').classList.remove('dice-animating');
+                        document.getElementById('popup-dice-icon').innerText = diceSymbols[diceRoll - 1];
+                    }
+                    if(document.getElementById('popup-dice-val')) {
+                        document.getElementById('popup-dice-val').innerText = diceRoll;
+                    }
+
+                    document.getElementById('modal-content').innerHTML = `<p class="text-xs font-bold text-gray-700">${players[currentTurn].name} Mendapatkan Angka ${diceRoll}!</p>`;
+                    
+                    let closeBtn = document.getElementById('modal-close-btn');
+                    closeBtn.innerText = "Ganti Giliran 🎲";
+                    closeBtn.disabled = false;
+                    closeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    closeBtn.setAttribute("onclick", `closeDicePopupAndRun(${diceRoll})`);
+
+                    window.tempDiceCallback = onComplete;
+                }
+            }, 80);
+        }
+
+        function closeDicePopupAndRun(diceRoll) {
+            document.getElementById('card-modal').classList.add('hidden');
+            resetModalHTML();
+            if (window.tempDiceCallback) {
+                window.tempDiceCallback(diceRoll);
+                window.tempDiceCallback = null;
+            }
+        }
+
+        function resetModalHTML() {
+            const modalBox = document.getElementById('modal-box');
+            modalBox.innerHTML = `
+                <div id="modal-icon" class="text-4xl">🌟</div>
+                <h3 id="modal-title" class="text-xl font-black text-red-900">INFORMASI</h3>
+                <div id="modal-content" class="bg-red-50 p-4 rounded-xl text-sm font-medium text-red-900 border border-dashed border-red-300 text-left max-h-60 overflow-y-auto"></div>
+                <button id="modal-close-btn" onclick="closeCardModal()" class="w-full monopoly-red text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-800 transition">Sudah Selesai ✨</button>
+            `;
+        }
+
         function triggerCardPopup() {
+            resetModalHTML();
             let currentTile = tiles[players[currentTurn].position];
-            let cardText = currentTile.type === 'chance' ? chanceCards[Math.floor(Math.random() * chanceCards.length)] : challengeCards[Math.floor(Math.random() * challengeCards.length)];
+            let activePlayer = players[currentTurn];
+            let opponentPlayer = players[currentTurn === 0 ? 1 : 0];
+
+            let rawCardText = "";
+            if (currentTile.type === 'chance') {
+                rawCardText = chanceCards[Math.floor(Math.random() * chanceCards.length)];
+            } else {
+                rawCardText = challengeCards[Math.floor(Math.random() * challengeCards.length)];
+            }
+
+            // Ganti penanda placeholder otomatis dengan nama asli pemain
+            let cardText = rawCardText
+                .replaceAll("[ME]", activePlayer.name)
+                .replaceAll("[LAVON]", opponentPlayer.name);
+
             let modalTitle = currentTile.type === 'chance' ? "🌟 KARTU KESEMPATAN" : "🔥 KARTU TANTANGAN";
             let modalIcon = currentTile.type === 'chance' ? "🌟" : "🔥";
 
-            showPopup(modalTitle, `${players[currentTurn].name}, jalankan perintah ini:<br><br><strong>"${cardText}"</strong>`, modalIcon, true, currentTile.type);
+            showPopup(modalTitle, `${activePlayer.name}, jalankan perintah ini:<br><br><strong>"${cardText}"</strong>`, modalIcon, true, currentTile.type);
         }
 
         function closeCardModal() {
             document.getElementById('card-modal').classList.add('hidden');
+            resetModalHTML();
         }
 
         function closeCardModalAndNext() {
             document.getElementById('card-modal').classList.add('hidden');
+            resetModalHTML();
             nextTurn();
         }
 
@@ -625,7 +737,7 @@
                 diceSound.play().catch(e => console.log("Audio play error:", e));
             }
 
-            executeRoll((diceRoll) => {
+            showDiceRollPopup((diceRoll) => {
                 let player = players[currentTurn];
                 if (diceRoll === 6) {
                     player.inJail = false;
@@ -649,30 +761,8 @@
                 updateUI();
                 nextTurn(); 
             } else {
-                showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membayar denda!", "⚠️");
+                showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membayar denda!", "⚠");
             }
-        }
-
-        function executeRoll(callback) {
-            let diceIcon = document.getElementById('dice-icon');
-            let diceBox = document.getElementById('dice-box');
-            
-            diceBox.classList.add('dice-animating');
-            
-            let counter = 0;
-            let shuffleInterval = setInterval(() => {
-                diceIcon.innerText = diceSymbols[Math.floor(Math.random() * 6)];
-                counter++;
-                
-                if (counter > 10) {
-                    clearInterval(shuffleInterval);
-                    const diceRoll = Math.floor(Math.random() * 6) + 1;
-                    diceBox.classList.remove('dice-animating');
-                    diceIcon.innerText = diceSymbols[diceRoll - 1];
-                    document.getElementById('dice-value').innerText = diceRoll;
-                    callback(diceRoll);
-                }
-            }, 80);
         }
 
         const originalRollDice = rollDice;
@@ -689,13 +779,13 @@
                     diceSound.play().catch(e => console.log("Audio play error:", e));
                 }
 
-                executeRoll((diceRoll) => {
+                showDiceRollPopup((diceRoll) => {
                     let startPos = 15;
                     let newPos = startPos + (diceRoll - 1); 
 
                     if (newPos >= tiles.length) {
                         newPos = newPos % tiles.length;
-                        player.money += 2000000;
+                        player.money += 500000;
                     }
                     player.position = newPos;
                     hasRolled = true;
@@ -718,7 +808,7 @@
                 showPopup("🎉 PEMBELIAN BERHASIL", `${player.name} membeli ${tile.name}!`, "🎉");
                 nextTouchAndNext();
             } else {
-                showPopup("⚠️ SALDO KURANG", "Uang kamu tidak cukup untuk membeli aset ini!", "⚠️");
+                showPopup("⚠ SALDO KURANG", "Uang kamu tidak cukup untuk membeli aset ini!", "⚠️");
             }
         }
 
